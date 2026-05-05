@@ -25,7 +25,7 @@ public class ProductRequest {
 
     @NotNull(message = "El stock es obligatorio")
     @Min(value = 0, message = "El Stock no puede ser negativo")
-    private Integer stock;
+    private Long stock;
 
     private String sku;
 

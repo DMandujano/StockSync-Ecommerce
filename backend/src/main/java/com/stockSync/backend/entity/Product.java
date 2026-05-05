@@ -32,7 +32,7 @@ public class Product {
 
     @Column(nullable = false)
     @Min(0)
-    private Integer stock;
+    private Long stock;
 
     @Column(unique = true, length = 50)
     private String sku;

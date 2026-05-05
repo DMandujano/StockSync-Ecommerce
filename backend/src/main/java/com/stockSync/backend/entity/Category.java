@@ -28,7 +28,7 @@ public class Category {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true) // Esto significa que si remueves un producto de la lista category.getProducts().remove(product), al guardar la categoría, el producto se borrará de la base de datos.
     private List<Product> products = new ArrayList<>();
 
 }
