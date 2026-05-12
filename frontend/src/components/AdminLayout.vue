@@ -3,7 +3,8 @@
     <v-navigation-drawer
       v-model="drawer"
       :rail="rail"
-      permanent
+      :temporary="$vuetify.display.mobile"
+      expand-on-hover
       app
       width="260"
       :rail-width="64"
@@ -16,7 +17,7 @@
       >
         <template v-slot:append>
           <v-btn
-            icon="mdi-chevron-left"
+            :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
             variant="text"
             size="small"
             @click.stop="rail = !rail"
@@ -43,13 +44,11 @@
       <template v-slot:append>
         <v-divider class="mb-2" />
         <v-list-item
-          class="pa-4"
           prepend-icon="mdi-theme-light-dark"
           title="Tema"
           @click="toggleTheme"
         />
         <v-list-item
-          class="pa-4"
           prepend-icon="mdi-logout"
           title="Cerrar Sesión"
           @click="handleLogout"
@@ -62,7 +61,7 @@
       <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
       <v-spacer />
       <v-btn
-        icon="mdi-theme-light-dark"
+        :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
         variant="text"
         @click="toggleTheme"
       />
@@ -94,6 +93,7 @@ const auth = useAuthStore()
 
 const drawer = ref(true)
 const rail = ref(false)
+const isDark = computed(() => theme.global.name.value === 'dark')
 
 const menuItems = [
   { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/admin' },
@@ -119,7 +119,7 @@ const pageTitle = computed(() => {
 })
 
 function toggleTheme() {
-  const name = theme.global.name.value === 'dark' ? 'light' : 'dark'
+  const name = isDark.value ? 'light' : 'dark'
   theme.global.name.value = name
   localStorage.setItem('theme', name)
 }
