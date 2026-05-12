@@ -71,8 +71,6 @@ const auth = useAuthStore()
 
 const links = [
   { to: '/', label: 'Inicio' },
-  { to: '/productos', label: 'Productos' },
-  { to: '/bodegas', label: 'Bodegas' },
 ]
 
 const isDark = computed(() => theme.global.name.value === 'dark')

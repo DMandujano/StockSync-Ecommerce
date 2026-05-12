@@ -23,7 +23,5 @@
 <script setup>
 const links = [
   { to: '/', label: 'Inicio' },
-  { to: '/productos', label: 'Productos' },
-  { to: '/bodegas', label: 'Bodegas' },
 ]
 </script>
