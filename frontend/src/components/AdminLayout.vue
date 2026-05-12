@@ -2,31 +2,28 @@
   <v-layout>
     <v-navigation-drawer
       v-model="drawer"
-      :rail="rail"
-      :temporary="$vuetify.display.mobile"
-      expand-on-hover
+      :rail="rail && !mobile"
+      :permanent="mdAndUp"
+      :temporary="smAndDown"
       app
       width="260"
       :rail-width="64"
     >
-      <v-list-item
-        class="pa-4"
-        :title="auth.userName"
-        :subtitle="auth.userEmail"
-        prepend-avatar="https://api.dicebear.com/7.x/initials/svg?seed=admin"
-      >
-        <template v-slot:append>
-          <v-btn
-            v-if="!$vuetify.display.mobile"
-            :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
-            variant="text"
-            size="small"
-            @click.stop="rail = !rail"
-          />
-        </template>
-      </v-list-item>
-
-      <v-divider />
+      <template v-slot:prepend>
+        <v-list-item
+          class="px-4 pt-4 pb-2"
+          :title="auth.userName"
+          :subtitle="auth.userEmail"
+          lines="two"
+        >
+          <template v-slot:prepend>
+            <v-avatar color="primary" size="40" class="mr-3">
+              <span class="text-white font-weight-bold">{{ initials }}</span>
+            </v-avatar>
+          </template>
+        </v-list-item>
+        <v-divider class="mx-4 mb-2" />
+      </template>
 
       <v-list density="compact" nav>
         <v-list-item
@@ -38,27 +35,31 @@
           :active="route.path === item.to"
           color="primary"
           rounded="lg"
-          class="ma-1"
+          class="mx-2 my-1"
         />
       </v-list>
 
       <template v-slot:append>
-        <v-divider class="mb-2" />
         <v-list-item
           prepend-icon="mdi-theme-light-dark"
           title="Tema"
+          class="mx-2 my-1"
+          rounded="lg"
           @click="toggleTheme"
         />
         <v-list-item
           prepend-icon="mdi-logout"
           title="Cerrar Sesión"
+          class="mx-2 my-1 mb-2"
+          rounded="lg"
           @click="handleLogout"
         />
+
       </template>
     </v-navigation-drawer>
 
     <v-app-bar flat>
-      <v-app-bar-nav-icon @click="$vuetify.display.mobile ? drawer = !drawer : rail = !rail" />
+      <v-app-bar-nav-icon @click="toggleDrawer" />
       <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
       <v-spacer />
       <v-btn
@@ -84,17 +85,23 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
 const router = useRouter()
 const theme = useTheme()
 const auth = useAuthStore()
+const { mobile, mdAndUp, smAndDown } = useDisplay()
 
 const drawer = ref(true)
 const rail = ref(false)
 const isDark = computed(() => theme.global.name.value === 'dark')
+
+const initials = computed(() => {
+  const name = auth.userName || 'A'
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+})
 
 const menuItems = [
   { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/admin' },
@@ -118,6 +125,14 @@ const pageTitle = computed(() => {
   }
   return map[route.name] || 'Admin'
 })
+
+function toggleDrawer() {
+  if (mobile.value) {
+    drawer.value = !drawer.value
+  } else {
+    rail.value = !rail.value
+  }
+}
 
 function toggleTheme() {
   const name = isDark.value ? 'light' : 'dark'

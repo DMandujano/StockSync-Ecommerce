@@ -61,7 +61,16 @@
               label="Categoría"
               :rules="[rules.required]"
               required
-            />
+            >
+              <template v-slot:append-item>
+                <v-divider class="mt-2" />
+                <v-list-item
+                  prepend-icon="mdi-plus"
+                  title="Crear nueva categoría"
+                  @click="showCategoryDialog = true"
+                />
+              </template>
+            </v-select>
           </v-col>
           <v-col cols="12" md="6">
             <v-text-field
@@ -95,6 +104,35 @@
         </v-row>
       </v-form>
     </v-card-text>
+
+    <v-dialog v-model="showCategoryDialog" max-width="400">
+      <v-card>
+        <v-card-title>Nueva Categoría</v-card-title>
+        <v-card-text>
+          <v-alert v-if="catError" type="error" variant="tonal" class="mb-4" closable @click:close="catError = ''">
+            {{ catError }}
+          </v-alert>
+          <v-text-field
+            v-model="catForm.name"
+            label="Nombre"
+            :rules="[rules.required]"
+            required
+          />
+          <v-textarea
+            v-model="catForm.description"
+            label="Descripción"
+            rows="2"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="showCategoryDialog = false">Cancelar</v-btn>
+          <v-btn color="primary" variant="tonal" :loading="catSaving" @click="handleCreateCategory">
+            Crear
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -114,6 +152,10 @@ const categories = computed(() => categoriesStore.categories)
 
 const saving = ref(false)
 const error = ref('')
+const showCategoryDialog = ref(false)
+const catSaving = ref(false)
+const catError = ref('')
+const catForm = ref({ name: '', description: '' })
 
 const form = ref({
   name: '',
@@ -130,6 +172,26 @@ const rules = {
   required: (v) => !!v || 'Campo requerido',
   positive: (v) => !v || Number(v) >= 0 || 'Debe ser mayor o igual a 0',
   minZero: (v) => !v || Number(v) >= 0 || 'Debe ser mayor o igual a 0',
+}
+
+async function handleCreateCategory() {
+  if (!catForm.value.name) {
+    catError.value = 'El nombre de la categoría es obligatorio'
+    return
+  }
+  catSaving.value = true
+  catError.value = ''
+  try {
+    const cat = await categoriesStore.save({ name: catForm.value.name, description: catForm.value.description })
+    await categoriesStore.fetchAll()
+    form.value.categoryId = cat.id
+    showCategoryDialog.value = false
+    catForm.value = { name: '', description: '' }
+  } catch (e) {
+    catError.value = e.response?.data?.message || 'Error al crear categoría'
+  } finally {
+    catSaving.value = false
+  }
 }
 
 async function handleSave() {
