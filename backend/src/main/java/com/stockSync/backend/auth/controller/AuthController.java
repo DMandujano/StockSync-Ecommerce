@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -24,12 +24,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    @PostMapping("/api/users/invite")
+    @PostMapping("/users/invite")
     public ResponseEntity<InviteResponse> invite(@Valid @RequestBody InviteRequest request) {
         return ResponseEntity.ok(authService.invite(request));
     }
 
-    @PostMapping("/api/users/change-password")
+    @PostMapping("/users/change-password")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authService.changePassword(request);
         return ResponseEntity.ok().build();
