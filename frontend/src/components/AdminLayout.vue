@@ -103,12 +103,29 @@ const initials = computed(() => {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
 })
 
-const menuItems = [
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/admin' },
-  { title: 'Productos', icon: 'mdi-package-variant-closed', to: '/admin/productos' },
-  { title: 'Bodegas', icon: 'mdi-warehouse', to: '/admin/bodegas' },
-  { title: 'Stock', icon: 'mdi-chart-box', to: '/admin/stock' },
-]
+const menuItems = computed(() => {
+  const items = [
+    { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/admin' },
+  ]
+
+  if (auth.isAdmin || auth.isLocal) {
+    items.push({ title: 'Productos', icon: 'mdi-package-variant-closed', to: '/admin/productos' })
+  }
+
+  if (auth.isAdmin || auth.isBodega) {
+    items.push({ title: 'Bodegas', icon: 'mdi-warehouse', to: '/admin/bodegas' })
+  }
+
+  if (auth.isAdmin || auth.isLocal || auth.isBodega) {
+    items.push({ title: 'Stock', icon: 'mdi-chart-box', to: '/admin/stock' })
+  }
+
+  if (auth.isAdmin) {
+    items.push({ title: 'Usuarios', icon: 'mdi-account-group', to: '/admin/usuarios' })
+  }
+
+  return items
+})
 
 const pageTitle = computed(() => {
   const map = {
@@ -122,6 +139,7 @@ const pageTitle = computed(() => {
     'AdminStock': 'Stock',
     'StockNuevo': 'Nuevo Stock',
     'StockEditar': 'Editar Stock',
+    'AdminUsuarios': 'Usuarios',
   }
   return map[route.name] || 'Admin'
 })

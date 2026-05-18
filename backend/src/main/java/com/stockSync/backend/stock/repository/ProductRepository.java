@@ -11,10 +11,11 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    //Buscar productos por nombre
     List<Product> findByNameContainingIgnoreCase(String name);
-    List<Product>findByCategoryId(Long categoryId);
-
+    List<Product> findByNameContainingIgnoreCaseAndUserId(String name, Long userId);
+    List<Product> findByCategoryId(Long categoryId);
+    List<Product> findByCategoryIdAndUserId(Long categoryId, Long userId);
     Optional<Product> findBySku(String sku);
-
+    List<Product> findByUserId(Long userId);
+    long countByUserId(Long userId);
 }

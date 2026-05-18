@@ -1,13 +1,17 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { login as apiLogin, register as apiRegister } from '../api/auth'
+import { login as apiLogin, register as apiRegister, changePassword as apiChangePassword } from '../api/auth'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('jwt') || null)
   const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
+  const mustChangePassword = ref(localStorage.getItem('mustChangePassword') === 'true')
 
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.role === 'ADMIN')
+  const isLocal = computed(() => user.value?.role === 'LOCAL')
+  const isBodega = computed(() => user.value?.role === 'BODEGA')
+  const userRole = computed(() => user.value?.role || '')
   const userEmail = computed(() => user.value?.email || '')
   const userName = computed(() => user.value?.nombre || '')
 
@@ -15,8 +19,10 @@ export const useAuthStore = defineStore('auth', () => {
     const { data } = await apiLogin(email, password)
     token.value = data.token
     user.value = { email: data.email, nombre: data.nombre, role: data.role }
+    mustChangePassword.value = data.forcePasswordChange || false
     localStorage.setItem('jwt', data.token)
     localStorage.setItem('user', JSON.stringify(user.value))
+    localStorage.setItem('mustChangePassword', mustChangePassword.value)
     return data
   }
 
@@ -24,21 +30,31 @@ export const useAuthStore = defineStore('auth', () => {
     const { data } = await apiRegister(nombre, email, password)
     token.value = data.token
     user.value = { email: data.email, nombre: data.nombre, role: data.role }
+    mustChangePassword.value = false
     localStorage.setItem('jwt', data.token)
     localStorage.setItem('user', JSON.stringify(user.value))
+    localStorage.setItem('mustChangePassword', 'false')
     return data
+  }
+
+  async function changePassword(oldPassword, newPassword) {
+    await apiChangePassword(oldPassword, newPassword)
+    mustChangePassword.value = false
+    localStorage.setItem('mustChangePassword', 'false')
   }
 
   function clear() {
     token.value = null
     user.value = null
+    mustChangePassword.value = false
     localStorage.removeItem('jwt')
     localStorage.removeItem('user')
+    localStorage.removeItem('mustChangePassword')
   }
 
   function logout() {
     clear()
   }
 
-  return { token, user, isAuthenticated, isAdmin, userEmail, userName, login, register, logout, clear }
+  return { token, user, mustChangePassword, isAuthenticated, isAdmin, isLocal, isBodega, userRole, userEmail, userName, login, register, changePassword, logout, clear }
 })

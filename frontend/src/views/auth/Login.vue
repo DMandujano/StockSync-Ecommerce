@@ -82,8 +82,12 @@ async function handleLogin() {
   loading.value = true
   error.value = ''
   try {
-    await auth.login(email.value, password.value)
-    router.push('/admin')
+    const data = await auth.login(email.value, password.value)
+    if (data.forcePasswordChange) {
+      router.push('/change-password')
+    } else {
+      router.push('/admin')
+    }
   } catch (e) {
     error.value = e.response?.data?.message || 'Credenciales inválidas'
   } finally {

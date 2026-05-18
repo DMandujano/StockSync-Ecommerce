@@ -1,21 +1,22 @@
 package com.stockSync.backend.auth.service;
 
 
-import com.stockSync.backend.auth.dto.AuthResponse;
-import com.stockSync.backend.auth.dto.LoginRequest;
-import com.stockSync.backend.auth.dto.RegisterRequest;
+import com.stockSync.backend.auth.dto.*;
 import com.stockSync.backend.user.model.Role;
 import com.stockSync.backend.security.service.JwtService;
 import com.stockSync.backend.user.model.User;
 import com.stockSync.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,17 +36,16 @@ public class AuthService {
                 .nombre(request.getNombre())
                 .email(request.getEmail())
                 .password(Objects.requireNonNull(passwordEncoder.encode(request.getPassword())))
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
 
         userRepository.save(user);
 
         var jwtToken = jwtService.generateToken(user);
-        return AuthResponse.builder().token(jwtToken).build();
+        return AuthResponse.builder().token(jwtToken).email(user.getEmail()).nombre(user.getNombre()).role(user.getRole().name()).build();
     }
 
     public AuthResponse login(LoginRequest request) {
-        //authenticationManager solo se usa aquí, donde tiene sentido
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -63,6 +63,46 @@ public class AuthService {
                 .email(user.getEmail())
                 .nombre(user.getNombre())
                 .role(user.getRole().name())
+                .forcePasswordChange(user.isForcePasswordChange())
                 .build();
+    }
+
+    public InviteResponse invite(InviteRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("El email ya existe");
+        }
+
+        User admin = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String tempPassword = UUID.randomUUID().toString().substring(0, 8);
+
+        var user = User.builder()
+                .nombre(request.getEmail().split("@")[0])
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(tempPassword))
+                .role(request.getRole())
+                .owner(admin)
+                .forcePasswordChange(true)
+                .build();
+
+        userRepository.save(user);
+
+        return InviteResponse.builder()
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .temporaryPassword(tempPassword)
+                .build();
+    }
+
+    public void changePassword(ChangePasswordRequest request) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!passwordEncoder.matches(request.getOldPassword(), currentUser.getPassword())) {
+            throw new BadCredentialsException("La contraseña actual no es correcta");
+        }
+
+        currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        currentUser.setForcePasswordChange(false);
+        userRepository.save(currentUser);
     }
 }
