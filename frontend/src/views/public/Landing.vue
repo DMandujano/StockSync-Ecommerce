@@ -54,21 +54,6 @@
       </v-container>
     </section>
 
-    <section class="tech-section py-12">
-      <v-container>
-        <h2 class="text-h3 font-weight-bold text-center mb-10">Tecnologías</h2>
-        <v-row justify="center">
-          <v-col v-for="tech in techStack" :key="tech.name" cols="6" md="3">
-            <v-card class="pa-4 text-center" elevation="1">
-              <v-icon size="36" color="primary" class="mb-2">{{ tech.icon }}</v-icon>
-              <div class="font-weight-bold">{{ tech.name }}</div>
-              <div class="text-caption text-medium-emphasis">{{ tech.role }}</div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
-
     <section class="cta-section py-12 bg-primary text-center">
       <v-container>
         <h2 class="text-h3 font-weight-bold text-white mb-4">¿Listo para gestionar tu inventario?</h2>
@@ -132,16 +117,6 @@ const features = [
   },
 ]
 
-const techStack = [
-  { name: 'Vue 3', icon: 'mdi-vuejs', role: 'Frontend SPA' },
-  { name: 'Vuetify', icon: 'mdi-material-design', role: 'Componentes UI' },
-  { name: 'Spring Boot', icon: 'mdi-leaf', role: 'API REST' },
-  { name: 'PostgreSQL', icon: 'mdi-database', role: 'Base de Datos' },
-  { name: 'JWT', icon: 'mdi-shield-key', role: 'Autenticación' },
-  { name: 'Flyway', icon: 'mdi-database-refresh', role: 'Migraciones' },
-  { name: 'Vite', icon: 'mdi-lightning-bolt', role: 'Build tool' },
-  { name: 'Pinia', icon: 'mdi-state-machine', role: 'Estado global' },
-]
 </script>
 
 <style scoped>
