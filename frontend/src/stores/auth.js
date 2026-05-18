@@ -9,6 +9,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.role === 'ADMIN')
+  const isLocal = computed(() => user.value?.role === 'LOCAL')
+  const isBodega = computed(() => user.value?.role === 'BODEGA')
+  const userRole = computed(() => user.value?.role || '')
   const userEmail = computed(() => user.value?.email || '')
   const userName = computed(() => user.value?.nombre || '')
 
@@ -53,5 +56,5 @@ export const useAuthStore = defineStore('auth', () => {
     clear()
   }
 
-  return { token, user, mustChangePassword, isAuthenticated, isAdmin, userEmail, userName, login, register, changePassword, logout, clear }
+  return { token, user, mustChangePassword, isAuthenticated, isAdmin, isLocal, isBodega, userRole, userEmail, userName, login, register, changePassword, logout, clear }
 })
