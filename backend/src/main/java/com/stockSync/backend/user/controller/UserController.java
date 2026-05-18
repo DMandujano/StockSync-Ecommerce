@@ -14,10 +14,16 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/invited")
+    public ResponseEntity<List<User>> listInvited() {
+        return ResponseEntity.ok(userService.getMyInvitedUsers());
+    }
+
     @GetMapping
     public ResponseEntity<List<User>> list() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
         userService.deleteUser(id);

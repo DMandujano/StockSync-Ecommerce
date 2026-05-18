@@ -90,6 +90,11 @@ const routes = [
         name: 'StockEditar',
         component: () => import('../views/admin/StockForm.vue'),
       },
+      {
+        path: 'usuarios',
+        name: 'AdminUsuarios',
+        component: () => import('../views/admin/UserManagement.vue'),
+      },
     ],
   },
 ]
