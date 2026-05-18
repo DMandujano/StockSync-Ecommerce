@@ -1,16 +1,11 @@
 package com.stockSync.backend.auth.controller;
 
-import com.stockSync.backend.auth.dto.AuthResponse;
-import com.stockSync.backend.auth.dto.LoginRequest;
-import com.stockSync.backend.auth.dto.RegisterRequest;
+import com.stockSync.backend.auth.dto.*;
 import com.stockSync.backend.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping
@@ -29,4 +24,14 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @PostMapping("/api/users/invite")
+    public ResponseEntity<InviteResponse> invite(@Valid @RequestBody InviteRequest request) {
+        return ResponseEntity.ok(authService.invite(request));
+    }
+
+    @PostMapping("/api/users/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        authService.changePassword(request);
+        return ResponseEntity.ok().build();
+    }
 }

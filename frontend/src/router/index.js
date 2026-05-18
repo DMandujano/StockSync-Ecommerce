@@ -11,11 +11,13 @@ const routes = [
     path: '/productos',
     name: 'Productos',
     component: () => import('../views/public/Productos.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/bodegas',
     name: 'Bodegas',
     component: () => import('../views/public/Bodegas.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/login',
@@ -26,6 +28,12 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: () => import('../views/auth/Register.vue'),
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: () => import('../views/auth/ChangePassword.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/admin',
@@ -97,6 +105,8 @@ router.beforeEach((to, from, next) => {
     next('/login')
   } else if (to.path === '/login' && auth.isAuthenticated) {
     next('/admin')
+  } else if (auth.isAuthenticated && auth.mustChangePassword && to.name !== 'ChangePassword') {
+    next('/change-password')
   } else {
     next()
   }
