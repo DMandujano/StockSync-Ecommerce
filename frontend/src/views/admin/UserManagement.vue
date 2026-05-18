@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row align="start">
     <v-col cols="12" md="5">
       <v-card elevation="2">
         <v-card-title>Invitar Usuario</v-card-title>

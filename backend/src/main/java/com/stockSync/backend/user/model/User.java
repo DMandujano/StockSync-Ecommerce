@@ -1,5 +1,6 @@
 package com.stockSync.backend.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.jspecify.annotations.NullMarked;
@@ -27,6 +28,7 @@ public class User  implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -34,6 +36,7 @@ public class User  implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     @ToString.Exclude
@@ -43,6 +46,7 @@ public class User  implements UserDetails {
     @Column(nullable = false)
     private boolean forcePasswordChange = false;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

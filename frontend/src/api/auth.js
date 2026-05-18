@@ -9,5 +9,5 @@ export function register(nombre, email, password) {
 }
 
 export function changePassword(oldPassword, newPassword) {
-  return client.post('/api/users/change-password', { oldPassword, newPassword })
+  return client.post('/users/change-password', { oldPassword, newPassword })
 }
