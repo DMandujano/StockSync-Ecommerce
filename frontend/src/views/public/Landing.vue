@@ -2,34 +2,43 @@
   <v-main>
     <PublicHeader />
 
-    <section class="hero-section py-16">
+    <section class="hero-section hero-background d-flex align-center">
       <v-container class="text-center">
         <v-row justify="center">
           <v-col cols="12" md="8">
-            <v-icon size="72" color="primary" class="mb-4">mdi-package-variant-closed</v-icon>
-            <h1 class="text-h2 font-weight-bold mb-4">StockSync</h1>
-            <p class="text-h5 text-medium-emphasis mb-6">
+
+            <v-icon size="80" color="primary" class="mb-6 floating-icon">mdi-package-variant-closed</v-icon>
+
+            <h1 class="text-h1 font-weight-bold mb-6">StockSync</h1>
+
+            <p class="text-h5 text-grey-lighten-1 mb-8">
               Inventario sin errores, negocio sin límites.
             </p>
-            <p class="text-body-1 text-medium-emphasis mb-8" style="max-width: 600px; margin: 0 auto;">
+            <p  class="text-body-1 text-grey-lighten-1 mx-auto mb-10 hero-description"
+                style="max-width: 600px; margin: 0 auto;"
+            >
               Sistema de gestión de inventario y E-commerce diseñado para optimizar el control de stock,
               gestionar productos y facilitar la administración en tiempo real.
             </p>
+            <br>
             <v-btn
-              to="/login"
-              color="primary"
-              size="x-large"
-              variant="flat"
-              class="mr-4 mb-2"
+                to="/login"
+                color="primary"
+                size="x-large"
+                variant="flat"
+                rounded="xl"
+                elevation="4"
+                class="mr-4 mb-2 px-8"
             >
               <v-icon start>mdi-login</v-icon>
               Iniciar Sesión
             </v-btn>
             <v-btn
-              to="/register"
-              size="x-large"
-              variant="outlined"
-              class="mb-2"
+                to="/register"
+                size="x-large"
+                variant="outlined"
+                rounded="xl"
+                class="mb-2 px-8"
             >
               <v-icon start>mdi-account-plus</v-icon>
               Registrarse
@@ -116,14 +125,86 @@ const features = [
     description: 'Interfaz moderna y responsiva accesible desde cualquier dispositivo.',
   },
 ]
-
 </script>
 
+
 <style scoped>
+
 .bg-surface {
   background-color: rgb(var(--v-theme-surface));
 }
+
 .cta-section {
   background-color: rgb(var(--v-theme-primary)) !important;
 }
+
+/* HERO */
+
+.hero-background {
+  background-image:
+      linear-gradient(
+          rgba(0, 0, 0, 0.45),
+          rgba(0, 0, 0, 0.55)
+      ),
+      url('public/background2.jpg');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  min-height: 92vh;
+
+  display: flex;
+  align-items: center;
+}
+
+/* TEXTO */
+
+.hero-description {
+  max-width: 700px;
+  line-height: 1.8;
+}
+
+/* BOTONES */
+
+.v-btn {
+  transition: all 0.3s ease;
+}
+
+.v-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* ICONO */
+
+.floating-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* CARDS */
+
+.v-card {
+  backdrop-filter: blur(8px);
+  transition: 0.3s ease;
+}
+
+.v-card:hover {
+  transform: translateY(-5px);
+}
+
 </style>

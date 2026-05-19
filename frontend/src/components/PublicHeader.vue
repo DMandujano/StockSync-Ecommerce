@@ -1,9 +1,13 @@
 <template>
   <v-app-bar flat density="comfortable" class="px-4">
     <v-container class="d-flex align-center pa-0">
-      <v-app-bar-title class="font-weight-bold text-primary">
-        StockSync
-      </v-app-bar-title>
+        <router-link to="/" class="text-decoration-none">
+          <v-app-bar-title
+              class="font-weight-bold text-primary cursor-pointer"
+          >
+            StockSync
+          </v-app-bar-title>
+        </router-link>
 
       <v-spacer />
 
@@ -69,9 +73,9 @@ const route = useRoute()
 const theme = useTheme()
 const auth = useAuthStore()
 
-const links = [
-  { to: '/', label: 'Inicio' },
-]
+// const links = [
+//   { to: '/', label: 'Inicio' },
+// ]
 
 const isDark = computed(() => theme.global.name.value === 'dark')
 
