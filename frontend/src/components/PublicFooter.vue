@@ -1,6 +1,6 @@
 <template>
   <v-footer class="mt-auto" app>
-    <v-container class="d-flex flex-wrap justify-center justify-sm-space-between align-center py-4">
+    <v-container class="d-flex flex-column align-center justify-center py-4 text-center">
       <div class="text-body-2 text-medium-emphasis">
         &copy; {{ new Date().getFullYear() }} StockSync. Todos los derechos reservados.
       </div>
@@ -20,8 +20,8 @@
   </v-footer>
 </template>
 
-<script setup>
-const links = [
-  { to: '/', label: 'Inicio' },
-]
-</script>
+<!--<script setup>-->
+<!--const links = [-->
+<!--  { to: '/', label: 'Inicio' },-->
+<!--]-->
+<!--</script>-->
