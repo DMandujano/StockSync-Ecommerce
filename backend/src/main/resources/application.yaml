@@ -20,11 +20,16 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+  # CORREGIDO: Asegurar que Spring maneje los recursos correctamente
+  web:
+    resources:
+      static-locations: classpath:/static/
+      add-mappings: true
+
   flyway:
     enabled: true
-    # Si la base de datos ya tiene tablas creadas manualmente, activa esto:
     baseline-on-migrate: true
-
 
 # Server Configuration
 server:
@@ -35,13 +40,10 @@ logging:
   level:
     org.springframework.security: INFO
     root: INFO
-    com.stockSync:
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    com.stockSync: INFO
 
 # Esta sección va aparte, NO dentro de spring:
 application:
   security:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
-

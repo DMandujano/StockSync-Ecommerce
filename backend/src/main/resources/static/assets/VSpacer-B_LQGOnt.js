@@ -1,0 +1,1 @@
+import{Z as e}from"./VAvatar-BK7cR_Jt.js";var t=e(`v-spacer`,`div`,`VSpacer`);export{t};

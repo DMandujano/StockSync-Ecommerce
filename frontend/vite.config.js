@@ -4,11 +4,11 @@ import vuetify from 'vite-plugin-vuetify'
 
 export default defineConfig({
     plugins: [vue(), vuetify()],
-    // ❌ QUITAR: base: '/api/', <-- Esto rompe la UI
+    // 1. ELIMINADO 'base': La app debe servirse desde la raíz '/' para evitar conflictos
     server: {
         port: 5173,
         proxy: {
-            // ✅ Un solo proxy atrapa todo lo que empiece con /api y lo manda al backend
+            // Esto solo se usa en desarrollo
             '/api': {
                 target: 'http://localhost:8080',
                 changeOrigin: true
@@ -16,6 +16,9 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: 'dist',
+        // 2. CORREGIDO: Esto envía los archivos compilados DIRECTO al static del backend
+        // Ajusta la ruta '..' si tu frontend no está al mismo nivel que backend
+        outDir: '../backend/src/main/resources/static',
+        emptyOutDir: true, // Limpia la carpeta antes de copiar los nuevos archivos
     },
 })
