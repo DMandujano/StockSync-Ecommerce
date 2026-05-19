@@ -23,34 +23,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter; // Inyectamos el nuevo filtro
-    private final AuthenticationProvider authenticationProvider; // Viene de tu ApplicationConfig
+    private final AuthenticationProvider authenticationProvider; // Viene de ApplicationConfig
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Esto permite que el fetch de JS envíe datos
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-
                 .authorizeHttpRequests(auth -> auth
-                        // Archivos estáticos del frontend (si los sirvieras desde Spring)
+                        // 1. Archivos estáticos y Landing Page
                         .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/icons.svg").permitAll()
 
-                        // Endpoints de autenticación
+                        // 2. Endpoints de autenticación (los únicos públicos de la API)
                         .requestMatchers("/api/login", "/api/register").permitAll()
 
-                        // Protegemos todo el árbol de rutas de la API usando asteriscos dobles
+                        // 3. Proteger estrictamente el backend (API)
                         .requestMatchers("/api/v1/**", "/api/users/**", "/api/admin/**").authenticated()
 
-                        // Cualquier otra petición que no esté explícitamente permitida arriba, SE BLOQUEA
-                        .anyRequest().authenticated()
+                        // 4. Permitir que Vue maneje sus propias rutas (ej. /admin, /login)
+                        // Esto evita que Spring intente autenticar rutas que son del frontend
+                        .anyRequest().permitAll()
                 )
-                // 4. MANEJO DE SESIÓN: Stateless porque usamos tokens
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // 5. FILTROS Y PROVIDER
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
