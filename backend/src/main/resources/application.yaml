@@ -42,7 +42,7 @@ logging:
     root: INFO
     com.stockSync: INFO
 
-# Esta sección va aparte, NO dentro de spring:
+# Configuración personalizada de la aplicación
 application:
   security:
     jwt:

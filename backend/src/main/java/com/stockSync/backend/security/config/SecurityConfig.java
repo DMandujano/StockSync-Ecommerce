@@ -40,11 +40,12 @@ public class SecurityConfig {
                                 "/icons.svg"
                         ).permitAll()
 
-                        // 2. Endpoints de autenticación de tu API (CORREGIDOS con el prefijo /api)
-                        // Ajusta esto si tu controlador de auth usa /api/login o /api/v1/auth/login
+                        // 2. Endpoints de autenticación de tu API
                         .requestMatchers(
                                 "/api/login",
-                                "/api/register"
+                                "/api/register",
+                                "/api/forgot-password",
+                                "/api/reset-password"
                         ).permitAll()
 
                         // 3. Documentación de Swagger/OpenAPI (Acceso público global)
@@ -54,11 +55,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // 4. Proteger estrictamente los endpoints de negocio de la API
-                        .requestMatchers("/api/v1/**", "/api/users/**", "/api/admin/**").authenticated()
-
-                        // 5. Permitir que Vue maneje cualquier otra ruta de la SPA (ej: /admin, /dashboard)
-                        .anyRequest().permitAll()
+                        // 4. Proteger cualquier otra petición por defecto
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

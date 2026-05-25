@@ -14,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -94,6 +96,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public void changePassword(ChangePasswordRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -104,5 +107,41 @@ public class AuthService {
         currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
         currentUser.setForcePasswordChange(false);
         userRepository.save(currentUser);
+    }
+
+    @Transactional
+    public String forgotPassword(ForgotPasswordRequest request) {
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("No se encontró ningún usuario con ese email"));
+
+        String token = UUID.randomUUID().toString();
+        user.setResetPasswordToken(token);
+        user.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1)); // El token es válido por 1 hora
+        userRepository.save(user);
+
+        // AQUÍ SIMULAMOS EL ENVÍO DEL CORREO
+        System.out.println("\n=======================================================");
+        System.out.println("SIMULACIÓN DE ENVÍO DE CORREO DE RESTABLECIMIENTO");
+        System.out.println("Para: " + user.getEmail());
+        System.out.println("Enlace de restablecimiento: http://localhost:5173/#/reset-password?token=" + token);
+        System.out.println("=======================================================\n");
+
+        return token; // Se lo devolvemos al frontend para que sea más fácil probar sin un servidor de correo real
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        var user = userRepository.findByResetPasswordToken(request.getToken())
+                .orElseThrow(() -> new RuntimeException("Token inválido o expirado"));
+
+        if (user.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("El token ha expirado");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetPasswordToken(null);
+        user.setResetPasswordTokenExpiry(null);
+        user.setForcePasswordChange(false); // Por si tenía el flag activo
+        userRepository.save(user);
     }
 }
