@@ -3,7 +3,7 @@ FROM node:18 AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
-COPY frontend/ .
+COPY frontend .
 RUN npm run build
 
 # Etapa 2: Build del Backend (Spring Boot)
@@ -11,7 +11,7 @@ FROM eclipse-temurin:21-jdk AS backend-build
 WORKDIR /app/backend
 
 # Copiar el wrapper de maven y dependencias primero para cachear
-COPY backend/.mvn/ .mvn
+COPY backend/.mvn .mvn
 COPY backend/mvnw backend/pom.xml ./
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
