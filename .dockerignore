@@ -1,5 +1,5 @@
 # Ignora la carpeta de compilación
-target/
+backend/target/
 
 # Ignora archivos y carpetas de configuración del sistema
 *.iml
