@@ -4,6 +4,19 @@ spring:
   config:
     import: "optional:file:.env[.properties]"
 
+  # --- Spring Mail Configuration (using Brevo SMTP) ---
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   # Database Configuration
   datasource:
     url: ${DB_URL}
@@ -47,3 +60,6 @@ application:
   security:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
+  mail:
+    from-email: jacobo.bustos.22@gmail.com
+    from-name: "Equipo de StockSync"

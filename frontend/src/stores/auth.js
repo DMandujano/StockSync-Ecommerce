@@ -35,15 +35,14 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function register(nombre, email, password) {
-        const { data } = await apiRegister(nombre, email, password)
-        setSessionData(data, false)
-        return data
+        // Ya no inicia sesión, solo registra al usuario
+        return await apiRegister(nombre, email, password)
     }
 
     async function changePassword(oldPassword, newPassword) {
         await apiChangePassword(oldPassword, newPassword)
-        mustChangePassword.value = false
-        localStorage.setItem('mustChangePassword', 'false')
+        // Después de cambiar la contraseña, borramos la sesión para forzar un nuevo login
+        clear()
     }
 
     function clear() {
