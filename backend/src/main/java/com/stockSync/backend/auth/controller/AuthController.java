@@ -20,8 +20,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "/register", consumes = "application/json")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.ok(Map.of("message", "Usuario registrado con éxito. Por favor, inicia sesión."));
     }
 
     @PostMapping("/login")
@@ -42,8 +43,8 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        String token = authService.forgotPassword(request);
-        return ResponseEntity.ok(Map.of("message", "Instrucciones enviadas al correo (revisa la consola del backend)", "tokenParaPruebas", token));
+        String message = authService.forgotPassword(request);
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     @PostMapping("/reset-password")

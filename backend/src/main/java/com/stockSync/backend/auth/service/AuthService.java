@@ -2,6 +2,7 @@ package com.stockSync.backend.auth.service;
 
 
 import com.stockSync.backend.auth.dto.*;
+import com.stockSync.backend.common.service.EmailService;
 import com.stockSync.backend.user.model.Role;
 import com.stockSync.backend.security.service.JwtService;
 import com.stockSync.backend.user.model.User;
@@ -28,8 +29,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
-    public AuthResponse register(RegisterRequest request) {
+    public void register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("El email ya existe");
         }
@@ -42,9 +44,6 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
-
-        var jwtToken = jwtService.generateToken(user);
-        return AuthResponse.builder().token(jwtToken).email(user.getEmail()).nombre(user.getNombre()).role(user.getRole().name()).build();
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -119,14 +118,9 @@ public class AuthService {
         user.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1)); // El token es válido por 1 hora
         userRepository.save(user);
 
-        // AQUÍ SIMULAMOS EL ENVÍO DEL CORREO
-        System.out.println("\n=======================================================");
-        System.out.println("SIMULACIÓN DE ENVÍO DE CORREO DE RESTABLECIMIENTO");
-        System.out.println("Para: " + user.getEmail());
-        System.out.println("Enlace de restablecimiento: http://localhost:5173/#/reset-password?token=" + token);
-        System.out.println("=======================================================\n");
+        emailService.sendPasswordResetEmail(user.getEmail(), token);
 
-        return token; // Se lo devolvemos al frontend para que sea más fácil probar sin un servidor de correo real
+        return "Email de recuperación enviado"; 
     }
 
     @Transactional

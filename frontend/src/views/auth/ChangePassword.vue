@@ -16,14 +16,16 @@
           </v-alert>
 
           <v-alert v-if="success" type="success" variant="tonal" class="mb-4">
-            Contraseña cambiada exitosamente. Redirigiendo...
+            Contraseña cambiada con éxito. Serás redirigido al login.
           </v-alert>
 
-          <v-form @submit.prevent="handleChangePassword">
+          <v-form @submit.prevent="handleChangePassword" v-if="!success">
             <v-text-field
               v-model="oldPassword"
               label="Contraseña actual"
-              type="password"
+              :append-inner-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showOldPassword ? 'text' : 'password'"
+              @click:append-inner="showOldPassword = !showOldPassword"
               prepend-inner-icon="mdi-lock"
               :rules="[rules.required]"
               required
@@ -32,10 +34,14 @@
             <v-text-field
               v-model="newPassword"
               label="Nueva contraseña"
-              type="password"
+              :append-inner-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showNewPassword ? 'text' : 'password'"
+              @click:append-inner="showNewPassword = !showNewPassword"
               prepend-inner-icon="mdi-lock-plus"
-              :rules="[rules.required, rules.min6]"
+              :rules="[rules.required, rules.minLength, rules.uppercase, rules.lowercase, rules.number]"
               required
+              hint="Mínimo 8 caracteres, con mayúsculas, minúsculas y números."
+              persistent-hint
             />
 
             <v-text-field
@@ -45,6 +51,7 @@
               prepend-inner-icon="mdi-lock-check"
               :rules="[rules.required, rules.match]"
               required
+              class="mt-4"
             />
 
             <v-btn
@@ -65,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 
@@ -78,10 +85,15 @@ const confirmPassword = ref('')
 const error = ref('')
 const success = ref(false)
 const loading = ref(false)
+const showOldPassword = ref(false)
+const showNewPassword = ref(false)
 
 const rules = {
   required: (v) => !!v || 'Campo requerido',
-  min6: (v) => !v || v.length >= 6 || 'Mínimo 6 caracteres',
+  minLength: (v) => (v && v.length >= 8) || 'Mínimo 8 caracteres',
+  uppercase: (v) => /[A-Z]/.test(v) || 'Debe contener al menos una mayúscula',
+  lowercase: (v) => /[a-z]/.test(v) || 'Debe contener al menos una minúscula',
+  number: (v) => /\d/.test(v) || 'Debe contener al menos un número',
   match: (v) => v === newPassword.value || 'Las contraseñas no coinciden',
 }
 
@@ -95,7 +107,8 @@ async function handleChangePassword() {
   try {
     await auth.changePassword(oldPassword.value, newPassword.value)
     success.value = true
-    setTimeout(() => router.push('/admin'), 1500)
+    // La sesión se borra en el store, ahora redirigimos al login
+    setTimeout(() => router.push('/login'), 2000)
   } catch (e) {
     const msg = e.response?.data?.message || e.response?.data?.error || 'Error al cambiar la contraseña'
     error.value = msg
