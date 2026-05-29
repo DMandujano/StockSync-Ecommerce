@@ -13,7 +13,7 @@
             {{ error }}
           </v-alert>
 
-          <v-form @submit.prevent="handleLogin">
+          <v-form ref="form" @submit.prevent="handleLogin">
             <v-text-field
               v-model="email"
               label="Email"
@@ -31,6 +31,12 @@
               :rules="[rules.required]"
               required
             />
+
+            <div class="d-flex justify-end mt-2 mb-3">
+              <v-btn variant="text" color="primary" to="/forgot-password" size="small">
+                ¿Olvidaste tu contraseña?
+              </v-btn>
+            </div>
 
             <v-btn
               type="submit"
@@ -68,6 +74,7 @@ import { useAuthStore } from '../../stores/auth'
 const router = useRouter()
 const auth = useAuthStore()
 
+const form = ref(null) // Referencia para el formulario
 const email = ref('')
 const password = ref('')
 const error = ref('')
@@ -79,6 +86,10 @@ const rules = {
 }
 
 async function handleLogin() {
+  // Validar el formulario antes de enviar
+  const { valid } = await form.value.validate()
+  if (!valid) return
+
   loading.value = true
   error.value = ''
   try {
