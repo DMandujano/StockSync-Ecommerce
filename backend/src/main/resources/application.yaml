@@ -2,7 +2,9 @@ spring:
   application:
     name: StockSync Backend
   config:
-    import: "optional:file:.env[.properties]"
+    import: 
+      - "optional:file:.env[.properties]"
+      - "optional:file:../.env[.properties]"
   mvc:
     servlet:
       path: /api
@@ -49,7 +51,7 @@ spring:
 
 # Server Configuration
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 # Logging Configuration
 logging:
