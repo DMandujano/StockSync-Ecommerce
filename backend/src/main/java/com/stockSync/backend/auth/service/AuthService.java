@@ -2,7 +2,6 @@ package com.stockSync.backend.auth.service;
 
 
 import com.stockSync.backend.auth.dto.*;
-import com.stockSync.backend.common.service.EmailService;
 import com.stockSync.backend.user.model.Role;
 import com.stockSync.backend.security.service.JwtService;
 import com.stockSync.backend.user.model.User;
@@ -29,7 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final EmailService emailService;
+    private final EmailService emailService; // Spring ahora lo encontrará aquí
 
     public void register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
