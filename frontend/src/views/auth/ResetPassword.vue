@@ -3,36 +3,34 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3">
         <v-card class="elevation-12 rounded-xl" :loading="loading">
-          <v-card-title class="text-center bg-primary text-white py-4 text-h5 font-weight-bold">
-            Restablecer Contraseña
-          </v-card-title>
+          <v-toolbar color="primary" dark flat>
+            <v-toolbar-title>Restablecer Contraseña</v-toolbar-title>
+          </v-toolbar>
           <v-card-text class="pa-6">
-            <v-alert v-if="successMessage" type="success" variant="tonal" class="mb-4">
-              {{ successMessage }}
-            </v-alert>
-            <v-alert v-if="error" type="error" variant="tonal" class="mb-4">
-              {{ error }}
+            <v-alert v-if="message" :type="isError ? 'error' : 'success'" variant="tonal" class="mb-4">
+              {{ message }}
             </v-alert>
 
-            <v-form @submit.prevent="submit" v-if="!successMessage">
+            <v-form @submit.prevent="handleResetPassword" v-if="!completed">
               <v-text-field
                 v-model="password"
                 label="Nueva Contraseña"
-                prepend-inner-icon="mdi-lock"
-                variant="outlined"
-                type="password"
+                :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
+                @click:append-inner="showPassword = !showPassword"
                 required
-                :rules="[v => !!v || 'La contraseña es requerida']"
+                :rules="[rules.required, rules.minLength, rules.uppercase, rules.lowercase, rules.number]"
+                hint="Mínimo 8 caracteres, con mayúsculas, minúsculas y números."
+                persistent-hint
               ></v-text-field>
 
               <v-text-field
-                v-model="passwordConfirm"
+                v-model="confirmPassword"
                 label="Confirmar Nueva Contraseña"
-                prepend-inner-icon="mdi-lock-check"
-                variant="outlined"
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 required
-                :rules="[v => !!v || 'La confirmación es requerida', v => v === password || 'Las contraseñas no coinciden']"
+                :rules="[rules.required, rules.match]"
+                class="mt-4"
               ></v-text-field>
 
               <v-btn
@@ -46,11 +44,11 @@
                 Cambiar Contraseña
               </v-btn>
             </v-form>
+
+            <v-card-actions v-if="completed" class="justify-center mt-4">
+              <v-btn block color="primary" to="/login">Ir a Iniciar Sesión</v-btn>
+            </v-card-actions>
           </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions class="justify-center py-4 bg-grey-lighten-5">
-            <v-btn variant="text" color="primary" to="/login">Volver al login</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -58,39 +56,68 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { authService } from '../../api/auth'
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { authService } from '../../api/auth'; // CORREGIDO: Usar el servicio centralizado
 
-const route = useRoute()
-const token = ref('')
-const password = ref('')
-const passwordConfirm = ref('')
-const loading = ref(false)
-const successMessage = ref('')
-const error = ref('')
+const route = useRoute();
+const router = useRouter();
+
+const password = ref('');
+const confirmPassword = ref('');
+const token = ref(null);
+
+const loading = ref(false);
+const message = ref('');
+const isError = ref(false);
+const completed = ref(false);
+const showPassword = ref(false);
+
+const rules = {
+  required: (v) => !!v || 'Campo requerido',
+  minLength: (v) => (v && v.length >= 8) || 'Mínimo 8 caracteres',
+  uppercase: (v) => /[A-Z]/.test(v) || 'Debe contener al menos una mayúscula',
+  lowercase: (v) => /[a-z]/.test(v) || 'Debe contener al menos una minúscula',
+  number: (v) => /\d/.test(v) || 'Debe contener al menos un número',
+  match: (v) => v === password.value || 'Las contraseñas no coinciden',
+};
 
 onMounted(() => {
-  token.value = route.query.token || ''
+  token.value = route.query.token;
   if (!token.value) {
-    error.value = 'Token de restablecimiento no encontrado. Solicita un nuevo enlace.'
+    message.value = 'Token de restablecimiento no encontrado.';
+    isError.value = true;
   }
-})
+});
 
-const submit = async () => {
-  if (password.value !== passwordConfirm.value || !password.value) return
+const handleResetPassword = async () => {
+  if (password.value !== confirmPassword.value) {
+    message.value = 'Las contraseñas no coinciden.';
+    isError.value = true;
+    return;
+  }
+  if (!token.value) {
+    message.value = 'Token inválido o expirado.';
+    isError.value = true;
+    return;
+  }
 
-  loading.value = true
-  error.value = ''
-  successMessage.value = ''
+  loading.value = true;
+  isError.value = false;
+  message.value = '';
 
   try {
-    const response = await authService.resetPassword(token.value, password.value)
-    successMessage.value = response.data.message
-  } catch (e) {
-    error.value = e.response?.data?.message || 'Error al restablecer la contraseña. El token puede ser inválido o haber expirado.'
+    // CORREGIDO: Llamada a la API a través del servicio con la URL correcta
+    await authService.resetPassword(token.value, password.value);
+
+    message.value = '¡Contraseña actualizada con éxito! Serás redirigido al login.';
+    completed.value = true;
+    setTimeout(() => router.push('/login'), 3000);
+  } catch (error) {
+    isError.value = true;
+    message.value = error.response?.data?.message || 'Error al restablecer la contraseña. El token puede ser inválido o haber expirado.';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>

@@ -1,6 +1,7 @@
 package com.stockSync.backend.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class ChangePasswordRequest {
     private String oldPassword;
 
     @NotBlank(message = "La nueva contraseña es obligatoria")
-    @Size(min = 6, message = "La nueva contraseña debe tener al menos 6 caracteres")
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "La contraseña debe ser alfanumérica y contener al menos una mayúscula, una minúscula y un número")
     private String newPassword;
 }

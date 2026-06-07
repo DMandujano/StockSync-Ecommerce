@@ -21,5 +21,9 @@ public class Webconfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         // Redirigir la ruta raíz (/) hacia el index.html del frontend
         registry.addViewController("/").setViewName("forward:/index.html");
+        
+        // Redirigir cualquier ruta que no tenga punto (como .js, .css) al index.html
+        registry.addViewController("/{spring:[\\w\\-]+}").setViewName("forward:/index.html");
+        registry.addViewController("/**/{spring:[\\w\\-]+}").setViewName("forward:/index.html");
     }
 }

@@ -1,8 +1,8 @@
 <template>
-  <v-main>
+  <v-main fluid class="login-background">
     <PublicHeader />
 
-    <v-container class="py-12" max-width="480">
+    <v-container fluid class="py-12" max-width="480">
       <v-card class="pa-6" elevation="4">
         <v-card-title class="text-h4 font-weight-bold text-center mb-2">
           Iniciar Sesión
@@ -32,7 +32,7 @@
               required
             />
 
-            <div class="d-flex justify-end mt-2">
+            <div class="d-flex justify-end mt-2 mb-3">
               <v-btn variant="text" color="primary" to="/forgot-password" size="small">
                 ¿Olvidaste tu contraseña?
               </v-btn>
@@ -74,7 +74,7 @@ import { useAuthStore } from '../../stores/auth'
 const router = useRouter()
 const auth = useAuthStore()
 
-const form = ref(null)
+const form = ref(null) // Referencia para el formulario
 const email = ref('')
 const password = ref('')
 const error = ref('')
@@ -86,6 +86,7 @@ const rules = {
 }
 
 async function handleLogin() {
+  // Validar el formulario antes de enviar
   const { valid } = await form.value.validate()
   if (!valid) return
 
@@ -105,3 +106,37 @@ async function handleLogin() {
   }
 }
 </script>
+
+<style scoped>
+.login-background {
+  background-image:
+      linear-gradient(
+          rgba(2, 3, 0, 0.72),
+          rgba(2, 3, 0, 0.72)
+      ),
+      url('/loginback.jpg');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  backdrop-filter: blur(10px);
+  background: rgba(20, 20, 20, 0.75) !important;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.login-background {
+  position: fixed;
+  inset: 0;
+}
+
+</style>

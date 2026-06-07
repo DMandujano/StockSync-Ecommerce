@@ -12,8 +12,11 @@
           <v-alert v-if="error" type="error" variant="tonal" class="mb-4" closable @click:close="error = ''">
             {{ error }}
           </v-alert>
+          <v-alert v-if="successMessage" type="success" variant="tonal" class="mb-4">
+            {{ successMessage }}
+          </v-alert>
 
-          <v-form @submit.prevent="handleRegister">
+          <v-form @submit.prevent="handleRegister" v-if="!successMessage">
             <v-text-field
               v-model="nombre"
               label="Nombre"
@@ -34,10 +37,14 @@
             <v-text-field
               v-model="password"
               label="Contraseña"
-              type="password"
+              :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPassword ? 'text' : 'password'"
+              @click:append-inner="showPassword = !showPassword"
               prepend-inner-icon="mdi-lock"
-              :rules="[rules.required, rules.min6]"
+              :rules="[rules.required, rules.minLength, rules.uppercase, rules.lowercase, rules.number]"
               required
+              hint="Mínimo 8 caracteres, con mayúsculas, minúsculas y números."
+              persistent-hint
             />
 
             <v-btn
@@ -80,20 +87,29 @@ const nombre = ref('')
 const email = ref('')
 const password = ref('')
 const error = ref('')
+const successMessage = ref('')
 const loading = ref(false)
+const showPassword = ref(false)
 
 const rules = {
   required: (v) => !!v || 'Campo requerido',
   email: (v) => /.+@.+/.test(v) || 'Email inválido',
-  min6: (v) => !v || v.length >= 6 || 'Mínimo 6 caracteres',
+  minLength: (v) => (v && v.length >= 8) || 'Mínimo 8 caracteres',
+  uppercase: (v) => /[A-Z]/.test(v) || 'Debe contener al menos una mayúscula',
+  lowercase: (v) => /[a-z]/.test(v) || 'Debe contener al menos una minúscula',
+  number: (v) => /\d/.test(v) || 'Debe contener al menos un número',
 }
 
 async function handleRegister() {
   loading.value = true
   error.value = ''
+  successMessage.value = ''
   try {
-    await auth.register(nombre.value, email.value, password.value)
-    router.push('/admin')
+    const response = await auth.register(nombre.value, email.value, password.value)
+    successMessage.value = response.data.message + " Redirigiendo al login..."
+    setTimeout(() => {
+      router.push('/login')
+    }, 2000)
   } catch (e) {
     const err = e.response?.data
     if (err?.errors) {
