@@ -18,4 +18,5 @@ public class AuthResponse {
     private String email;
     private String nombre;
     private String role;
+    private boolean forcePasswordChange;
 }

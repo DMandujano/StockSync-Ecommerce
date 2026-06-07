@@ -9,18 +9,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/invited")
+    public ResponseEntity<List<User>> listInvited() {
+        return ResponseEntity.ok(userService.getMyInvitedUsers());
+    }
+
     @GetMapping
     public ResponseEntity<List<User>> list() {
         return ResponseEntity.ok(userService.getAllUsers());
-    }
-    @GetMapping("/admin/usuarios")
-    public String listUsersPage() {
-        return "admin/usuarios"; // Carga templates/admin/usuarios.html
     }
 
     @DeleteMapping("/{id}")

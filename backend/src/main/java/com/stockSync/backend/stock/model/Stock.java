@@ -1,16 +1,15 @@
 package com.stockSync.backend.stock.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import com.stockSync.backend.user.model.User;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stocks")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Stock {
@@ -31,7 +30,12 @@ public class Stock {
     private Integer quantity;
 
     @UpdateTimestamp
+    @Column(name = "last_update")
     private LocalDateTime lastUpdate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Stock(Product product, Warehouse warehouse, Integer quantity) {
         this.product = product;

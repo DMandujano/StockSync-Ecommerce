@@ -1,16 +1,15 @@
 package com.stockSync.backend.stock.model;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.stockSync.backend.user.model.User;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,11 +26,9 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    @DecimalMin("0.0")
-    private BigDecimal price;
+    private BigDecimal price; // Las validaciones como @DecimalMin pertenecen a los DTOs de entrada, no a las entidades físicas
 
     @Column(nullable = false)
-    @Min(0)
     private Long stock;
 
     @Column(unique = true, length = 50)
@@ -55,4 +52,7 @@ public class Product {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
