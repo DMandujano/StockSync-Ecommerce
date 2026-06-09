@@ -17,6 +17,8 @@
             <th>SKU</th>
             <th>Categoría</th>
             <th>Precio</th>
+            <th>Stock Total</th>
+            <th>Stock Mínimo</th>
             <th>Bodegas</th>
             <th>Activo</th>
             <th>Acciones</th>
@@ -28,6 +30,12 @@
             <td><code>{{ product.sku }}</code></td>
             <td>{{ product.categoryName }}</td>
             <td>${{ formatPrice(product.price) }}</td>
+            <td>
+              <v-chip :color="product.stock <= product.minStockLevel ? 'warning' : 'success'" size="x-small">
+                {{ product.stock }}
+              </v-chip>
+            </td>
+            <td>{{ product.minStockLevel ?? 5 }}</td>
             <td>
               <template v-if="product.warehouseStocks && product.warehouseStocks.length">
                 <v-chip
@@ -65,7 +73,7 @@
             </td>
           </tr>
           <tr v-if="!products.length && !loading">
-            <td colspan="7" class="text-center text-medium-emphasis py-6">
+            <td colspan="9" class="text-center text-medium-emphasis py-6">
               No hay productos registrados
             </td>
           </tr>
