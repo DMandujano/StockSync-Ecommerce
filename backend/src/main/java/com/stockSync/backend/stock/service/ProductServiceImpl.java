@@ -105,6 +105,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
         product.setCategory(category);
         product.setUser(getTenantUser());
 
+        if (product.getMinStockLevel() == null) {
+            product.setMinStockLevel(5);
+        }
+
         long totalStock = 0;
         if (request.getWarehouseStocks() != null) {
             totalStock = request.getWarehouseStocks().stream()
@@ -146,6 +150,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
         }
 
         productMapper.updateEntityFromRequest(request, product);
+
+        if (product.getMinStockLevel() == null) {
+            product.setMinStockLevel(5);
+        }
 
         if (!product.getCategory().getId().equals(request.getCategoryId())) {
             Category newCategory = categoryRepository.findById(request.getCategoryId())
