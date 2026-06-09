@@ -1,64 +1,201 @@
 <template>
-  <v-container fluid>
-    <h1 class="text-h4 font-weight-bold mb-6">
-      Inventario de Bodega
-    </h1>
+  <v-container fluid class="pa-6">
 
-    <v-card>
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-h4 font-weight-bold">
+        Inventario de Bodega
+      </h1>
+
+      <p class="text-medium-emphasis">
+        Consulta el stock disponible para abastecer los locales.
+      </p>
+    </div>
+
+    <!-- Resumen -->
+    <v-row class="mb-4">
+
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="text-center pa-4">
+          <v-icon
+              size="50"
+              color="primary"
+          >
+            mdi-package-variant
+          </v-icon>
+
+          <div class="text-subtitle-1 mt-2">
+            Productos
+          </div>
+
+          <div class="text-h4 font-weight-bold">
+            {{ productos.length }}
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="text-center pa-4">
+          <v-icon
+              size="50"
+              color="warning"
+          >
+            mdi-alert
+          </v-icon>
+
+          <div class="text-subtitle-1 mt-2">
+            Stock Bajo
+          </div>
+
+          <div class="text-h4 font-weight-bold">
+            {{ stockBajo }}
+          </div>
+        </v-card>
+      </v-col>
+
+    </v-row>
+
+    <!-- Buscador -->
+    <v-card class="mb-4">
       <v-card-text>
+        <v-text-field
+            v-model="busqueda"
+            label="Buscar producto"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+        />
+      </v-card-text>
+    </v-card>
+
+    <!-- Tabla -->
+    <v-card>
+
+      <v-card-title>
+        Inventario General
+      </v-card-title>
+
+      <v-divider />
+
+      <div class="table-wrapper">
         <v-table>
+
           <thead>
           <tr>
             <th>Producto</th>
+            <th>SKU</th>
+            <th>Ubicación</th>
             <th>Stock</th>
             <th>Estado</th>
           </tr>
           </thead>
 
           <tbody>
+
           <tr
-              v-for="producto in productos"
+              v-for="producto in productosFiltrados"
               :key="producto.id"
           >
             <td>{{ producto.nombre }}</td>
+
+            <td>{{ producto.sku }}</td>
+
+            <td>{{ producto.ubicacion }}</td>
 
             <td>{{ producto.stock }}</td>
 
             <td>
               <v-chip
-                  :color="producto.stock <= 50 ? 'error' : 'success'"
+                  :color="estadoColor(producto.stock)"
+                  size="small"
+                  variant="tonal"
               >
-                {{
-                  producto.stock <= 50
-                      ? 'Stock Bajo'
-                      : 'Disponible'
-                }}
+                {{ estadoTexto(producto.stock) }}
               </v-chip>
             </td>
           </tr>
+
           </tbody>
+
         </v-table>
-      </v-card-text>
+      </div>
+
     </v-card>
+
   </v-container>
 </template>
 
 <script setup>
-const productos = [
+import { ref, computed } from 'vue'
+
+const busqueda = ref('')
+
+const productos = ref([
   {
     id: 1,
-    nombre: 'Coca Cola',
-    stock: 500
+    nombre: 'Coca Cola 1.5L',
+    sku: 'CC1500',
+    ubicacion: 'Pasillo A',
+    stock: 150
   },
   {
     id: 2,
-    nombre: 'Pepsi',
-    stock: 250
+    nombre: 'Papas Fritas',
+    sku: 'PF001',
+    ubicacion: 'Pasillo B',
+    stock: 15
   },
   {
     id: 3,
-    nombre: 'Papas Fritas',
-    stock: 30
+    nombre: 'Agua Mineral',
+    sku: 'AM001',
+    ubicacion: 'Pasillo C',
+    stock: 8
   }
-]
+])
+
+const productosFiltrados = computed(() => {
+  return productos.value.filter(p =>
+      p.nombre.toLowerCase().includes(busqueda.value.toLowerCase())
+  )
+})
+
+const stockBajo = computed(() => {
+  return productos.value.filter(p => p.stock <= 20).length
+})
+
+function estadoColor(stock) {
+  if (stock <= 10) return 'error'
+  if (stock <= 20) return 'warning'
+  return 'success'
+}
+
+function estadoTexto(stock) {
+  if (stock <= 10) return 'Crítico'
+  if (stock <= 20) return 'Bajo'
+  return 'Disponible'
+}
 </script>
+
+<style scoped>
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.v-card {
+  border-radius: 16px;
+}
+
+.v-table tbody tr:hover {
+  background-color: rgba(255,255,255,0.04);
+}
+
+@media (max-width: 600px) {
+
+  .text-h4 {
+    font-size: 1.8rem;
+  }
+
+}
+
+</style>

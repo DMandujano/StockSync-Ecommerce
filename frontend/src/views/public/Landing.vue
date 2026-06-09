@@ -80,29 +80,6 @@
           Comenzar ahora
         </v-btn>
 
-<!-- Borrar cuando el proyecto este listo-->
-        <v-btn
-            to="/bodega"
-            size="x-large"
-            variant="outlined"
-            rounded="xl"
-            class="px-8"
-        >
-          <v-icon start>mdi-storefront</v-icon>
-          Vista Bodega
-        </v-btn>
-
-        <v-btn
-            to="/local"
-            size="x-large"
-            variant="outlined"
-            rounded="xl"
-            class="px-8"
-        >
-          <v-icon start>mdi-storefront</v-icon>
-          Vista Local
-        </v-btn>
-
 
       </v-container>
     </section>

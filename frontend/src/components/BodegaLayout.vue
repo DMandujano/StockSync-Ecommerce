@@ -1,86 +1,229 @@
-
 <template>
-  <v-app>
+  <v-layout>
+
+    <!-- Sidebar -->
     <v-navigation-drawer
-        permanent
-        width="250"
-        color="surface"
+        v-model="drawer"
+        :rail="rail && !mobile"
+        :permanent="mdAndUp"
+        :temporary="smAndDown"
+        app
+        width="260"
+        :rail-width="64"
     >
-      <div class="pa-4 d-flex align-center">
-        <v-avatar color="primary">
-          <span>{{ inicial }}</span>
-        </v-avatar>
 
-        <div class="ml-3">
-          <div class="font-weight-bold">{{ nombre }}</div>
-          <div class="text-caption">{{ email }}</div>
-        </div>
-      </div>
+      <template #prepend>
+        <v-list-item
+            class="px-4 pt-4 pb-2"
+            :title="nombre"
+            :subtitle="email"
+            lines="two"
+        >
+          <template #prepend>
+            <v-avatar
+                color="primary"
+                size="40"
+                class="mr-3"
+            >
+              <span class="text-white font-weight-bold">
+                {{ inicial }}
+              </span>
+            </v-avatar>
+          </template>
+        </v-list-item>
 
-      <v-divider />
+        <v-divider class="mx-4 mb-2" />
+      </template>
 
-      <v-list nav>
-        <v-divider class="my-2" />
+      <v-list density="compact" nav>
 
         <v-list-item
             prepend-icon="mdi-view-dashboard"
             title="Dashboard"
             to="/bodega"
+            rounded="lg"
+            class="mx-2 my-1"
         />
 
         <v-list-item
             prepend-icon="mdi-clipboard-list"
             title="Solicitudes"
             to="/bodega/solicitudes"
+            rounded="lg"
+            class="mx-2 my-1"
         />
 
         <v-list-item
             prepend-icon="mdi-package-variant"
             title="Inventario"
             to="/bodega/inventario"
+            rounded="lg"
+            class="mx-2 my-1"
         />
 
         <v-list-item
             prepend-icon="mdi-truck-delivery"
             title="Despacho"
             to="/bodega/despacho"
+            rounded="lg"
+            class="mx-2 my-1"
         />
 
         <v-list-item
             prepend-icon="mdi-history"
             title="Historial"
             to="/bodega/historial"
+            rounded="lg"
+            class="mx-2 my-1"
         />
+
       </v-list>
 
       <template #append>
-        <div class="pa-4">
-          <v-btn
-              to="/login"
-              block
-              prepend-icon="mdi-logout"
-              color="error"
-          >
-            Cerrar sesión
-          </v-btn>
-        </div>
+
+        <v-list-item
+            prepend-icon="mdi-theme-light-dark"
+            title="Tema"
+            rounded="lg"
+            class="mx-2 my-1"
+            @click="toggleTheme"
+        />
+
+        <v-list-item
+            prepend-icon="mdi-logout"
+            title="Cerrar Sesión"
+            rounded="lg"
+            class="mx-2 my-1 mb-2"
+            @click="handleLogout"
+        />
+
       </template>
+
     </v-navigation-drawer>
 
+    <!-- Top bar -->
+    <v-app-bar flat>
+
+      <v-app-bar-nav-icon
+          @click="toggleDrawer"
+      />
+
+      <v-app-bar-title>
+        {{ pageTitle }}
+      </v-app-bar-title>
+
+      <v-spacer />
+
+      <v-btn
+          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+          variant="text"
+          @click="toggleTheme"
+      />
+
+    </v-app-bar>
+
+    <!-- Content -->
     <v-main>
-      <router-view />
+      <v-container
+          fluid
+          class="pa-6"
+      >
+        <router-view />
+      </v-container>
     </v-main>
-  </v-app>
+
+  </v-layout>
 </template>
 
 <script setup>
-const nombre = 'Usuario bodega'
+import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useDisplay, useTheme } from 'vuetify'
+
+const route = useRoute()
+const router = useRouter()
+
+const theme = useTheme()
+
+const { mobile, mdAndUp, smAndDown } = useDisplay()
+
+const drawer = ref(true)
+const rail = ref(false)
+
+const nombre = 'Usuario Bodega'
 const email = 'bodega@stocksync.cl'
 
-const inicial = nombre.charAt(0)
+const inicial = computed(() => {
+  return nombre
+      .split(' ')
+      .map(w => w[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
+})
+
+const isDark = computed(() =>
+    theme.global.name.value === 'dark'
+)
+
+const pageTitle = computed(() => {
+
+  const map = {
+    '/bodega': 'Dashboard',
+    '/bodega/solicitudes': 'Solicitudes',
+    '/bodega/inventario': 'Inventario',
+    '/bodega/despacho': 'Despacho',
+    '/bodega/historial': 'historial'
+  }
+
+  return map[route.path] || 'Bodega'
+})
+
+function toggleDrawer() {
+
+  if (mobile.value) {
+    drawer.value = !drawer.value
+  } else {
+    rail.value = !rail.value
+  }
+
+}
+
+function toggleTheme() {
+
+  const name =
+      isDark.value
+          ? 'light'
+          : 'dark'
+
+  theme.global.name.value = name
+
+  localStorage.setItem('theme', name)
+
+}
+
+function handleLogout() {
+
+  // Por ahora solo vuelve al inicio.
+  // Cuando conecten backend aquí irá auth.logout()
+
+  router.push('/')
+
+}
 </script>
 
-
 <style scoped>
+
+.v-navigation-drawer {
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.v-list-item {
+  transition: all .2s ease;
+}
+
+.v-list-item:hover {
+  transform: translateX(4px);
+}
 
 </style>
