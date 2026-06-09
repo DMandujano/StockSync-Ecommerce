@@ -69,12 +69,22 @@
               label="URL de Imagen"
             />
           </v-col>
-          <v-col cols="12" md="6" class="d-flex align-center">
+          <v-col cols="12" md="3" class="d-flex align-center">
             <v-switch
               v-model="form.active"
               label="Producto activo"
               color="primary"
               inset
+            />
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-text-field
+              v-model="form.minStockLevel"
+              label="Stock Mínimo"
+              type="number"
+              min="0"
+              hint="Alerta de bajo stock"
+              persistent-hint
             />
           </v-col>
         </v-row>
@@ -284,13 +294,14 @@ const form = ref({
   sku: '',
   imageUrl: '',
   active: true,
+  minStockLevel: 5,
   categoryId: null,
   warehouseStocks: [],
 })
 
 const rules = {
   required: (v) => v !== null && v !== '' || 'Campo requerido',
-  positive: (v) => !v || Number(v) >= 0 || 'Debe ser mayor o igual a 0',
+  positive: (v) => !v || Number(v) > 0 || 'El precio debe ser mayor a 0',
   minZero: (v) => !v || Number(v) >= 0 || 'Debe ser mayor o igual a 0',
 }
 
@@ -361,6 +372,7 @@ async function handleSave() {
       sku: form.value.sku,
       imageUrl: form.value.imageUrl,
       active: form.value.active,
+      minStockLevel: Number(form.value.minStockLevel),
       categoryId: Number(form.value.categoryId),
     }
 
@@ -403,6 +415,7 @@ onMounted(async () => {
         sku: data.sku,
         imageUrl: data.imageUrl || '',
         active: data.active,
+        minStockLevel: data.minStockLevel ?? 5,
         categoryId: data.categoryId || null,
         warehouseStocks: data.warehouseStocks || [],
       }

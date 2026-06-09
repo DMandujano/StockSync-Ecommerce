@@ -76,6 +76,13 @@ public class ProductServiceImpl extends BaseService implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getLowStockProducts() {
+        List<Product> products = productRepository.findLowStockProducts(getTenantId());
+        return productMapper.toResponseList(products);
+    }
+
+    @Override
     public long countAllProducts() {
         return productRepository.countByUserId(getTenantId());
     }
@@ -97,6 +104,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
         Product product = productMapper.toEntity(request);
         product.setCategory(category);
         product.setUser(getTenantUser());
+
+        if (product.getMinStockLevel() == null) {
+            product.setMinStockLevel(5);
+        }
 
         long totalStock = 0;
         if (request.getWarehouseStocks() != null) {
@@ -139,6 +150,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
         }
 
         productMapper.updateEntityFromRequest(request, product);
+
+        if (product.getMinStockLevel() == null) {
+            product.setMinStockLevel(5);
+        }
 
         if (!product.getCategory().getId().equals(request.getCategoryId())) {
             Category newCategory = categoryRepository.findById(request.getCategoryId())

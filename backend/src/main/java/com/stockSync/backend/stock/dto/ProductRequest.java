@@ -21,14 +21,17 @@ public class ProductRequest {
     private String description;
 
     @NotNull(message = "El precio es obligatorio")
-    @DecimalMin(value = "0.0", message = "El precio no puede ser negativo")
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
     private BigDecimal price;
 
+    @NotBlank(message = "El SKU es obligatorio")
     private String sku;
 
     private String imageUrl;
 
     private Boolean active;
+
+    private Integer minStockLevel;
 
     @NotNull(message = "La categoria es obligatoria")
     private Long categoryId;

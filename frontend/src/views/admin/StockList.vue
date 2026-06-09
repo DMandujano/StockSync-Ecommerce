@@ -30,7 +30,7 @@
             <td class="font-weight-medium">{{ s.productName }}</td>
             <td>{{ s.warehouseName }}</td>
             <td>
-              <v-chip :color="s.quantity > 0 ? 'success' : 'error'" size="small">
+              <v-chip :color="chipColor(s)" size="small">
                 {{ s.quantity }}
               </v-chip>
             </td>
@@ -123,7 +123,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useStockStore } from '../../stores/stock'
-import { getProducts } from '../../api/products'
+import { getProducts, getLowStockProducts } from '../../api/products'
 import { getWarehouses } from '../../api/warehouses'
 
 const store = useStockStore()
@@ -131,6 +131,7 @@ const stocks = ref([])
 const products = ref([])
 const warehouses = ref([])
 const loading = ref(false)
+const lowStockProductIds = ref(new Set())
 const deleteDialog = ref(false)
 const deleting = ref(false)
 const stockToDelete = ref(null)
@@ -153,6 +154,12 @@ function formatDate(date) {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+function chipColor(s) {
+  if (s.quantity === 0) return 'error'
+  if (lowStockProductIds.value.has(s.productId)) return 'warning'
+  return 'success'
 }
 
 function confirmDelete(s) {
@@ -197,12 +204,14 @@ async function handleTransfer() {
 onMounted(async () => {
   loading.value = true
   try {
-    const [prods, whs] = await Promise.all([
+    const [prods, whs, lowStock] = await Promise.all([
       getProducts(),
       getWarehouses(),
+      getLowStockProducts(),
     ])
     products.value = prods.data
     warehouses.value = whs.data
+    lowStockProductIds.value = new Set(lowStock.data.map(p => p.id))
     await store.fetchAll()
     stocks.value = [...store.stocks]
   } finally {
