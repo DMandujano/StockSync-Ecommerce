@@ -23,7 +23,7 @@
     </v-col>
   </v-row>
 
-  <v-row class="mt-4">
+  <v-row class="mt-4" v-if="lowStockProducts.length">
     <v-col cols="12">
       <v-card elevation="2" color="error" variant="tonal">
         <v-card-title class="text-error font-weight-bold">
