@@ -79,6 +79,8 @@
           <v-icon start>mdi-rocket-launch</v-icon>
           Comenzar ahora
         </v-btn>
+
+
       </v-container>
     </section>
 
