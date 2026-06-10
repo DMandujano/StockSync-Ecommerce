@@ -174,11 +174,7 @@ const features = [
   line-height: 1.8;
 }
 
-h1,
-.hero-description,
-.text-h5 {
-  //text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
+
 
 /* BOTONES */
 
