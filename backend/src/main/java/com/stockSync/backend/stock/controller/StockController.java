@@ -1,6 +1,7 @@
 package com.stockSync.backend.stock.controller;
 
 
+import com.stockSync.backend.stock.dto.StockRequest;
 import com.stockSync.backend.stock.dto.StockResponse;
 import com.stockSync.backend.stock.dto.StockTransferRequest;
 import com.stockSync.backend.stock.dto.StockMovementResponse;
