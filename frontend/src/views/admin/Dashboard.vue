@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="mx-0">
     <v-col cols="12" sm="4">
       <v-card class="pa-6 text-center" elevation="2">
         <v-icon size="48" color="primary" class="mb-3">mdi-package-variant-closed</v-icon>
@@ -23,7 +23,7 @@
     </v-col>
   </v-row>
 
-  <v-row class="mt-4" v-if="lowStockProducts.length">
+  <v-row class="mx-0 mt-4" v-if="lowStockProducts.length">
     <v-col cols="12">
       <v-card elevation="2" color="error" variant="tonal">
         <v-card-title class="text-error font-weight-bold">
@@ -32,7 +32,7 @@
         </v-card-title>
         <v-card-text>
           <div class="overflow-x-auto">
-            <v-table density="comfortable" class="bg-transparent">
+            <v-table density="comfortable" class="text-no-wrap bg-transparent">
               <thead>
                 <tr>
                   <th>Nombre</th>

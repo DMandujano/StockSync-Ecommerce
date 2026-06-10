@@ -61,7 +61,7 @@
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
       <div class="overflow-x-auto">
-        <v-table density="comfortable">
+        <v-table class="text-no-wrap" density="comfortable">
           <thead>
             <tr>
               <th>Producto (SKU)</th>

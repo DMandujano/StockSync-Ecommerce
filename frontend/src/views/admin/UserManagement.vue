@@ -1,5 +1,5 @@
 <template>
-  <v-row align="start">
+  <v-row class="mx-0" align="start">
     <v-col cols="12" md="5">
       <v-card elevation="2">
         <v-card-title class="text-wrap">Invitar Usuario</v-card-title>
@@ -63,7 +63,7 @@
           <v-progress-linear v-if="loading" indeterminate color="primary" />
 
           <div class="overflow-x-auto">
-            <v-table density="comfortable">
+            <v-table class="text-no-wrap" density="comfortable">
               <thead>
                 <tr>
                   <th>Email</th>

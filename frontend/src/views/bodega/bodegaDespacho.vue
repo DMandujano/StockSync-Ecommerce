@@ -13,7 +13,7 @@
     </div>
 
     <!-- Resumen -->
-    <v-row class="mb-6">
+    <v-row class="mx-0 mb-6">
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="text-center pa-4">
@@ -66,7 +66,7 @@
     </v-row>
 
     <!-- Despachos -->
-    <v-row>
+    <v-row class="mx-0">
 
       <v-col
           v-for="despacho in despachos"

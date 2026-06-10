@@ -11,7 +11,7 @@
       </p>
     </div>
 
-    <v-row>
+    <v-row class="mx-0">
 
       <v-col
           v-for="solicitud in solicitudes"

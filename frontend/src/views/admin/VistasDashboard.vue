@@ -9,7 +9,7 @@
       </p>
     </div>
 
-    <v-row>
+    <v-row class="mx-0">
       <v-col cols="12" sm="6">
         <v-card
           class="vistas-card"

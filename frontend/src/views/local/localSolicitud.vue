@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row class="mx-0">
       <v-col cols="12">
         <h1 class="text-h5 text-md-h4 font-weight-bold mb-4">
           Solicitar Reposición
@@ -9,7 +9,7 @@
     </v-row>
 
     <!-- Formulario -->
-    <v-row>
+    <v-row class="mx-0">
       <v-col cols="12" md="8">
         <v-card elevation="2">
           <v-card-title class="text-wrap">
@@ -103,7 +103,7 @@
     </v-row>
 
     <!-- Historial de solicitudes -->
-    <v-row class="mt-6">
+    <v-row class="mx-0 mt-6">
       <v-col cols="12">
         <v-card elevation="2">
           <v-card-title class="text-wrap">

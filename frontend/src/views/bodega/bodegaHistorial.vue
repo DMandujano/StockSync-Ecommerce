@@ -12,7 +12,7 @@
     </div>
 
     <!-- Resumen -->
-    <v-row class="mb-6">
+    <v-row class="mx-0 mb-6">
 
       <v-col cols="12" sm="4">
         <v-card class="text-center pa-4">

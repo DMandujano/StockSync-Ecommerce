@@ -14,7 +14,7 @@
       </v-btn>
     </div>
 
-    <v-row>
+    <v-row class="mx-0">
       <v-col cols="12" md="4">
         <v-card rounded="xl">
           <v-card-text>
@@ -47,7 +47,7 @@
       <v-card-title class="text-wrap">Registrar Nueva Venta</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="registrarVenta">
-          <v-row>
+          <v-row class="mx-0">
             <v-col cols="12" md="6">
               <v-select
                   v-model="formulario.productId"
@@ -86,7 +86,7 @@
             </v-col>
           </v-row>
         </v-form>
-        <v-table class="mt-4">
+        <v-table class="text-no-wrap mt-4">
           <thead>
             <tr>
               <th>Fecha</th>

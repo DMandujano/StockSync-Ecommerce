@@ -11,7 +11,7 @@
 
       <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-4" />
 
-      <v-row v-if="warehouses.length > 0">
+      <v-row class="mx-0" v-if="warehouses.length > 0">
         <v-col v-for="wh in warehouses" :key="wh.id" cols="12" sm="6" md="4">
           <v-card variant="outlined" class="h-100 d-flex flex-column">
             <v-card-item>

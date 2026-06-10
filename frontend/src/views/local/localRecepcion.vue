@@ -4,7 +4,7 @@
       Recepción de Productos
     </h1>
 
-    <v-row class="mb-4">
+    <v-row class="mx-0 mb-4">
       <v-col cols="12" md="6">
         <v-card class="pa-4">
           <v-card-title class="px-0 pt-0">Escáner de Recepción</v-card-title>
@@ -36,7 +36,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row class="mx-0">
       <v-col
           v-for="item in recepciones"
           :key="item.id"

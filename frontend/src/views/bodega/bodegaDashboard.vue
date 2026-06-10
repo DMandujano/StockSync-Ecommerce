@@ -18,7 +18,7 @@
     </v-card>
 
     <!-- Cards -->
-    <v-row>
+    <v-row class="mx-0">
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="dashboard-card text-center">

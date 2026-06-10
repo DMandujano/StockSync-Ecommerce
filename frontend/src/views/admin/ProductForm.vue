@@ -8,7 +8,7 @@
       </v-alert>
 
       <v-form @submit.prevent="handleSave">
-        <v-row>
+        <v-row class="mx-0">
           <v-col cols="12" md="6">
             <v-text-field
               v-model="form.name"
@@ -90,7 +90,7 @@
         </v-row>
 
         <v-divider class="my-4" />
-        <v-row>
+        <v-row class="mx-0">
           <v-col cols="12">
             <div class="d-flex align-center mb-2">
               <span class="text-subtitle-1 font-weight-medium">Stock por Bodega</span>
@@ -109,7 +109,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="isEdit && form.warehouseStocks && form.warehouseStocks.length">
+        <v-row class="mx-0" v-if="isEdit && form.warehouseStocks && form.warehouseStocks.length">
           <v-col cols="12">
             <v-chip
               v-for="ws in form.warehouseStocks"
@@ -123,7 +123,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-for="(entry, index) in form.warehouseStocks" :key="index" v-if="!isEdit">
+        <v-row class="mx-0" v-for="(entry, index) in form.warehouseStocks" :key="index" v-if="!isEdit">
           <v-col cols="12" md="5">
             <v-select
               v-model="entry.warehouseId"
@@ -165,7 +165,7 @@
           </v-col>
         </v-row>
 
-        <v-row class="mt-4">
+        <v-row class="mx-0 mt-4">
           <v-col cols="12" class="d-flex ga-4">
             <v-btn
               type="submit"

@@ -8,7 +8,7 @@
       </v-alert>
 
       <v-form @submit.prevent="handleSave">
-        <v-row>
+        <v-row class="mx-0">
           <v-col cols="12" md="6">
             <v-select
               v-model="form.productId"
@@ -42,7 +42,7 @@
           </v-col>
         </v-row>
 
-        <v-row class="mt-4">
+        <v-row class="mx-0 mt-4">
           <v-col cols="12" class="d-flex ga-4">
             <v-btn
               type="submit"

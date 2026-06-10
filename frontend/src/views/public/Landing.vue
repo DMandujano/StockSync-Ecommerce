@@ -4,7 +4,7 @@
 
     <section class="hero-section hero-background d-flex align-center">
       <v-container class="text-center">
-        <v-row justify="center">
+        <v-row class="mx-0" justify="center">
           <v-col cols="12" md="8">
 
             <v-icon size="80" color="primary" class="mb-6 floating-icon">mdi-package-variant-closed</v-icon>
@@ -57,7 +57,7 @@
     <section class="features-section py-12 bg-surface">
       <v-container>
         <h2 class="text-h5 text-md-h4 text-md-h3 font-weight-bold text-center mb-10">Características</h2>
-        <v-row>
+        <v-row class="mx-0">
           <v-col v-for="feature in features" :key="feature.title" cols="12" md="4">
             <v-card class="pa-6 text-center h-100" elevation="2">
               <v-icon size="48" :color="feature.color" class="mb-4">{{ feature.icon }}</v-icon>

@@ -18,7 +18,7 @@
       </v-menu>
     </div>
 
-    <v-row>
+    <v-row class="mx-0">
       <v-col cols="12" md="3">
         <v-card color="primary" dark>
           <v-card-text>

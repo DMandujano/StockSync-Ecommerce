@@ -5,7 +5,7 @@
     <v-container class="py-8">
       <h1 class="text-h3 font-weight-bold mb-6">Bodegas</h1>
 
-      <v-row>
+      <v-row class="mx-0">
         <v-col v-for="warehouse in warehouses" :key="warehouse.id" cols="12" sm="6" md="4">
           <v-card elevation="2">
             <v-card-title class="text-wrap">{{ warehouse.name }}</v-card-title>
@@ -46,7 +46,7 @@
             />
 
             <div class="overflow-x-auto">
-              <v-table density="comfortable">
+              <v-table class="text-no-wrap" density="comfortable">
                 <thead>
                   <tr>
                     <th>Producto</th>
