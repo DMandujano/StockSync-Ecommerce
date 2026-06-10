@@ -144,7 +144,6 @@ const features = [
 
 .cta-section {
   background-color: rgb(var(--v-theme-primary)) !important;
-  //background: linear-gradient(135deg, #166534, #4ADE80);
 }
 
 
