@@ -62,50 +62,52 @@
         <v-card-text>
           <v-progress-linear v-if="loading" indeterminate color="primary" />
 
-          <v-table density="comfortable">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Nombre</th>
-                <th>Rol</th>
-                <th>Bodega</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="u in users" :key="u.id">
-                <td>{{ u.email }}</td>
-                <td>{{ u.nombre }}</td>
-                <td>
-                  <v-chip :color="chipColor(u.role)" size="small" variant="tonal">
-                    {{ u.role }}
-                  </v-chip>
-                </td>
-                <td>{{ u.assignedWarehouse?.name || 'Ninguna' }}</td>
-                <td>
-                  <v-chip :color="u.enabled ? 'success' : 'error'" size="small" variant="tonal">
-                    {{ u.enabled ? 'Activo' : 'Inactivo' }}
-                  </v-chip>
-                </td>
-                <td>
-                  <v-btn icon="mdi-pencil" variant="text" size="small" color="primary" @click="openEditDialog(u)"></v-btn>
-                  <v-btn 
-                    :icon="u.enabled ? 'mdi-account-off' : 'mdi-account-check'" 
-                    variant="text" 
-                    size="small" 
-                    :color="u.enabled ? 'error' : 'success'" 
-                    @click="toggleActive(u)">
-                  </v-btn>
-                </td>
-              </tr>
-              <tr v-if="!users.length && !loading">
-                <td colspan="6" class="text-center text-medium-emphasis py-6">
-                  No hay usuarios registrados
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+          <div class="overflow-x-auto">
+            <v-table density="comfortable">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Nombre</th>
+                  <th>Rol</th>
+                  <th>Bodega</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="u in store.users" :key="u.id">
+                  <td>{{ u.email }}</td>
+                  <td>{{ u.nombre }}</td>
+                  <td>
+                    <v-chip :color="chipColor(u.role)" size="small" variant="tonal">
+                      {{ u.role }}
+                    </v-chip>
+                  </td>
+                  <td>{{ u.assignedWarehouse?.name || 'Ninguna' }}</td>
+                  <td>
+                    <v-chip :color="u.enabled ? 'success' : 'error'" size="small" variant="tonal">
+                      {{ u.enabled ? 'Activo' : 'Inactivo' }}
+                    </v-chip>
+                  </td>
+                  <td>
+                    <v-btn icon="mdi-pencil" variant="text" size="small" color="primary" @click="openEditDialog(u)"></v-btn>
+                    <v-btn 
+                      :icon="u.enabled ? 'mdi-account-off' : 'mdi-account-check'" 
+                      variant="text" 
+                      size="small" 
+                      :color="u.enabled ? 'error' : 'success'" 
+                      @click="toggleActive(u)">
+                    </v-btn>
+                  </td>
+                </tr>
+                <tr v-if="!store.users.length && !loading">
+                  <td colspan="6" class="text-center text-medium-emphasis py-6">
+                    No hay usuarios registrados
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
+          </div>
         </v-card-text>
       </v-card>
 
@@ -149,7 +151,6 @@ import { useUsersStore } from '../../stores/users'
 import { getWarehouses } from '../../api/warehouses'
 
 const store = useUsersStore()
-const users = ref([])
 const warehouses = ref([])
 const loading = ref(false)
 const inviting = ref(false)
@@ -196,7 +197,6 @@ async function handleInvite() {
     tempPassword.value = result.temporaryPassword
     inviteSuccess.value = true
     form.value = { email: '', role: null, assignedWarehouseId: null }
-    users.value = [...store.users]
   } catch (e) {
     inviteError.value = e.response?.data?.message || 'Error al invitar usuario'
   } finally {
@@ -222,7 +222,6 @@ async function handleEdit() {
       role: editingUser.value.role,
       assignedWarehouseId: wid
     })
-    users.value = [...store.users]
     editDialog.value = false
   } catch (e) {
     alert('Error al actualizar usuario')
@@ -234,7 +233,6 @@ async function handleEdit() {
 async function toggleActive(u) {
   try {
     await store.update(u.id, { active: !u.enabled })
-    users.value = [...store.users]
   } catch (e) {
     alert('Error al cambiar estado')
   }
@@ -245,7 +243,6 @@ onMounted(async () => {
   try {
     const [wRes] = await Promise.all([getWarehouses(), store.fetchAll()])
     warehouses.value = wRes.data
-    users.value = [...store.users]
   } finally {
     loading.value = false
   }

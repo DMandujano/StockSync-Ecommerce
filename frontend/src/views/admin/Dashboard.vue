@@ -31,34 +31,36 @@
           Alertas de Bajo Stock
         </v-card-title>
         <v-card-text>
-          <v-table density="comfortable" class="bg-transparent">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Stock Mínimo</th>
-                <th>Stock Actual</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="p in lowStockProducts" :key="p.id">
-                <td>{{ p.name }}</td>
-                <td>{{ p.categoryName }}</td>
-                <td>{{ p.minStockLevel || 5 }}</td>
-                <td>
-                  <v-chip color="error" size="small" class="font-weight-bold">
-                    {{ p.stock }}
-                  </v-chip>
-                </td>
-              </tr>
-              <tr v-if="!lowStockProducts.length">
-                <td colspan="4" class="text-center text-medium">
-                  <v-icon color="success" class="mr-2">mdi-check-circle</v-icon>
-                  No hay productos con stock bajo
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+          <div class="overflow-x-auto">
+            <v-table density="comfortable" class="bg-transparent">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Categoría</th>
+                  <th>Stock Mínimo</th>
+                  <th>Stock Actual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="p in lowStockProducts" :key="p.id">
+                  <td>{{ p.name }}</td>
+                  <td>{{ p.categoryName }}</td>
+                  <td>{{ p.minStockLevel || 5 }}</td>
+                  <td>
+                    <v-chip color="error" size="small" class="font-weight-bold">
+                      {{ p.stock }}
+                    </v-chip>
+                  </td>
+                </tr>
+                <tr v-if="!lowStockProducts.length">
+                  <td colspan="4" class="text-center text-medium">
+                    <v-icon color="success" class="mr-2">mdi-check-circle</v-icon>
+                    No hay productos con stock bajo
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
+          </div>
         </v-card-text>
       </v-card>
     </v-col>

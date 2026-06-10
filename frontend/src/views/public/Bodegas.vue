@@ -45,31 +45,33 @@
               class="mb-4"
             />
 
-            <v-table density="comfortable">
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Última actualización</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in filteredStock" :key="item.id">
-                  <td>{{ item.productName }}</td>
-                  <td>
-                    <v-chip :color="item.quantity > 0 ? 'success' : 'error'" size="small">
-                      {{ item.quantity }}
-                    </v-chip>
-                  </td>
-                  <td>{{ formatDate(item.lastUpdate) }}</td>
-                </tr>
-                <tr v-if="!filteredStock.length">
-                  <td colspan="3" class="text-center text-medium-emphasis">
-                    Sin stock disponible
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
+            <div class="overflow-x-auto">
+              <v-table density="comfortable">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Última actualización</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in filteredStock" :key="item.id">
+                    <td>{{ item.productName }}</td>
+                    <td>
+                      <v-chip :color="item.quantity > 0 ? 'success' : 'error'" size="small">
+                        {{ item.quantity }}
+                      </v-chip>
+                    </td>
+                    <td>{{ formatDate(item.lastUpdate) }}</td>
+                  </tr>
+                  <tr v-if="!filteredStock.length">
+                    <td colspan="3" class="text-center text-medium-emphasis">
+                      Sin stock disponible
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </div>
           </v-card-text>
 
           <v-card-actions>

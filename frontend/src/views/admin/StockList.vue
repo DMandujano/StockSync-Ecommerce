@@ -15,43 +15,45 @@
     <v-card-text>
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
-      <v-table density="comfortable">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Bodega</th>
-            <th>Cantidad</th>
-            <th>Última actualización</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="s in stocks" :key="s.id">
-            <td class="font-weight-medium">{{ s.productName }}</td>
-            <td>{{ s.warehouseName }}</td>
-            <td>
-              <v-chip :color="chipColor(s)" size="small">
-                {{ s.quantity }}
-              </v-chip>
-            </td>
-            <td>{{ formatDate(s.lastUpdate) }}</td>
-            <td>
-              <v-btn
-                icon="mdi-delete"
-                variant="text"
-                color="error"
-                size="small"
-                @click="confirmDelete(s)"
-              />
-            </td>
-          </tr>
-          <tr v-if="!stocks.length && !loading">
-            <td colspan="5" class="text-center text-medium-emphasis py-6">
-              No hay registros de stock
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+      <div class="overflow-x-auto">
+        <v-table density="comfortable">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Bodega</th>
+              <th>Cantidad</th>
+              <th>Última actualización</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="s in stocks" :key="s.id">
+              <td class="font-weight-medium">{{ s.productName }}</td>
+              <td>{{ s.warehouseName }}</td>
+              <td>
+                <v-chip :color="chipColor(s)" size="small">
+                  {{ s.quantity }}
+                </v-chip>
+              </td>
+              <td>{{ formatDate(s.lastUpdate) }}</td>
+              <td>
+                <v-btn
+                  icon="mdi-delete"
+                  variant="text"
+                  color="error"
+                  size="small"
+                  @click="confirmDelete(s)"
+                />
+              </td>
+            </tr>
+            <tr v-if="!stocks.length && !loading">
+              <td colspan="5" class="text-center text-medium-emphasis py-6">
+                No hay registros de stock
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+      </div>
     </v-card-text>
 
     <v-dialog v-model="deleteDialog" max-width="400">

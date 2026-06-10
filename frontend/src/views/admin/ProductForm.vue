@@ -124,7 +124,7 @@
         </v-row>
 
         <v-row v-for="(entry, index) in form.warehouseStocks" :key="index" v-if="!isEdit">
-          <v-col cols="5">
+          <v-col cols="12" md="5">
             <v-select
               v-model="entry.warehouseId"
               :items="availableWarehouses"
@@ -144,7 +144,7 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="5">
+          <v-col cols="12" md="5">
             <v-text-field
               v-model="entry.quantity"
               label="Cantidad"
@@ -154,7 +154,7 @@
               required
             />
           </v-col>
-          <v-col cols="2" class="d-flex align-center">
+          <v-col cols="12" md="2" class="d-flex align-center">
             <v-btn
               icon="mdi-delete"
               variant="text"
