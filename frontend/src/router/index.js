@@ -53,23 +53,23 @@ const routes = [
       {
         path: '',
         name: 'LocalDashboard',
-        component: () => import('../views/local/LocalDashboard.vue'),
+        component: () => import('../views/local/localDashboard.vue'),
       },
       {
         path: 'ventas',
-        component: () => import('../views/local/LocalVentas.vue'),
+        component: () => import('../views/local/localVentas.vue'),
       },
       {
         path: 'inventario',
-        component: () => import('../views/local/LocalInventario.vue'),
+        component: () => import('../views/local/localInventario.vue'),
       },
       {
         path: 'solicitudReposicion',
-        component: () => import('../views/local/LocalSolicitud.vue'),
+        component: () => import('../views/local/localSolicitud.vue'),
       },
       {
         path: 'seguimiento',
-        component: () => import('../views/local/LocalSeguimiento.vue'),
+        component: () => import('../views/local/localSeguimiento.vue'),
       },
       {
         path: 'recepcion',
