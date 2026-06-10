@@ -1,5 +1,5 @@
 # Etapa 1: Build del Frontend (Vue)
-FROM node:18 AS frontend-build
+FROM node:20 AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
