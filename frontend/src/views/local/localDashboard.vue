@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div class="d-flex justify-space-between align-center mb-6">
-    <h1 class="text-h4 mb-0">Dashboard Local</h1>
+    <h1 class="text-h5 text-md-h4 mb-0">Dashboard Local</h1>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
@@ -23,7 +23,7 @@
         <v-card color="primary" dark>
           <v-card-text>
             <div class="text-h6">Ventas Hoy</div>
-            <div class="text-h4">{{ formatearDinero(ventasHoyTotal) }}</div>
+            <div class="text-h5 text-md-h4">{{ formatearDinero(ventasHoyTotal) }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -32,7 +32,7 @@
         <v-card color="success" dark>
           <v-card-text>
             <div class="text-h6">Productos</div>
-            <div class="text-h4">{{ totalProductos }}</div>
+            <div class="text-h5 text-md-h4">{{ totalProductos }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -41,7 +41,7 @@
         <v-card color="warning" dark>
           <v-card-text>
             <div class="text-h6">Bajo Stock</div>
-            <div class="text-h4">{{ bajoStock.length }}</div>
+            <div class="text-h5 text-md-h4">{{ bajoStock.length }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -50,7 +50,7 @@
         <v-card color="info" dark>
           <v-card-text>
             <div class="text-h6">Solicitudes</div>
-            <div class="text-h4">{{ solicitudes.length }}</div>
+            <div class="text-h5 text-md-h4">{{ solicitudes.length }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -59,11 +59,11 @@
 
     <!-- Productos con bajo stock -->
     <v-card class="mt-6">
-      <v-card-title>
+      <v-card-title class="text-wrap">
         Productos con Bajo Stock
       </v-card-title>
 
-      <v-table>
+      <v-table class="text-no-wrap">
         <thead>
         <tr>
           <th>Producto</th>
@@ -99,11 +99,11 @@
 
     <!-- Últimas solicitudes -->
     <v-card class="mt-6">
-      <v-card-title>
+      <v-card-title class="text-wrap">
         Últimas Solicitudes
       </v-card-title>
 
-      <v-table>
+      <v-table class="text-no-wrap">
         <thead>
         <tr>
           <th>ID</th>

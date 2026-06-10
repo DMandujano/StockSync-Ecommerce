@@ -2,7 +2,7 @@
   <v-row align="start">
     <v-col cols="12" md="5">
       <v-card elevation="2">
-        <v-card-title>Invitar Usuario</v-card-title>
+        <v-card-title class="text-wrap">Invitar Usuario</v-card-title>
         <v-card-text>
           <v-alert v-if="inviteError" type="error" variant="tonal" class="mb-4" closable @click:close="inviteError = ''">
             {{ inviteError }}
@@ -58,7 +58,7 @@
 
     <v-col cols="12" md="7">
       <v-card elevation="2">
-        <v-card-title>Todos los Usuarios</v-card-title>
+        <v-card-title class="text-wrap">Todos los Usuarios</v-card-title>
         <v-card-text>
           <v-progress-linear v-if="loading" indeterminate color="primary" />
 
@@ -114,7 +114,7 @@
 
       <v-dialog v-model="editDialog" max-width="500">
         <v-card>
-          <v-card-title>Editar Usuario</v-card-title>
+          <v-card-title class="text-wrap">Editar Usuario</v-card-title>
           <v-card-text>
             <v-form @submit.prevent="handleEdit" ref="editForm">
               <v-select
@@ -145,7 +145,7 @@
 
       <v-dialog v-model="deleteDialog" max-width="400">
         <v-card>
-          <v-card-title>Eliminar Usuario</v-card-title>
+          <v-card-title class="text-wrap">Eliminar Usuario</v-card-title>
           <v-card-text>
             ¿Estás seguro de que deseas eliminar al usuario <strong>{{ userToDelete?.nombre || userToDelete?.email }}</strong>? Esta acción no se puede deshacer.
           </v-card-text>

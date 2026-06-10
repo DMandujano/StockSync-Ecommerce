@@ -8,7 +8,7 @@
       <v-row>
         <v-col v-for="warehouse in warehouses" :key="warehouse.id" cols="12" sm="6" md="4">
           <v-card elevation="2">
-            <v-card-title>{{ warehouse.name }}</v-card-title>
+            <v-card-title class="text-wrap">{{ warehouse.name }}</v-card-title>
             <v-card-subtitle>Código: {{ warehouse.code }}</v-card-subtitle>
             <v-card-text>
               <div class="text-body-2">{{ warehouse.address }}</div>
@@ -30,7 +30,7 @@
 
       <v-dialog v-model="showStock" max-width="800">
         <v-card>
-          <v-card-title>
+          <v-card-title class="text-wrap">
             Stock en {{ selectedWarehouse?.name }}
           </v-card-title>
 

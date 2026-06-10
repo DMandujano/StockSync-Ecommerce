@@ -58,7 +58,7 @@
 
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
-        <v-card-title>Eliminar Stock</v-card-title>
+        <v-card-title class="text-wrap">Eliminar Stock</v-card-title>
         <v-card-text>
           ¿Estás seguro de eliminar este registro de stock?
         </v-card-text>
@@ -74,7 +74,7 @@
 
     <v-dialog v-model="showTransfer" max-width="500">
       <v-card>
-        <v-card-title>Transferir Stock</v-card-title>
+        <v-card-title class="text-wrap">Transferir Stock</v-card-title>
         <v-card-text>
           <v-alert v-if="transferError" type="error" variant="tonal" class="mb-4" closable @click:close="transferError = ''">
             {{ transferError }}

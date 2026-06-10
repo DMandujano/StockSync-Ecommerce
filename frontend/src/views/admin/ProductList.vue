@@ -85,7 +85,7 @@
 
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
-        <v-card-title>Eliminar Producto</v-card-title>
+        <v-card-title class="text-wrap">Eliminar Producto</v-card-title>
         <v-card-text>
           ¿Estás seguro de eliminar "{{ productToDelete?.name }}"?
         </v-card-text>

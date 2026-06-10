@@ -56,7 +56,7 @@
 
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
-        <v-card-title>Eliminar Local/Bodega</v-card-title>
+        <v-card-title class="text-wrap">Eliminar Local/Bodega</v-card-title>
         <v-card-text>
           ¿Estás seguro de eliminar "{{ warehouseToDelete?.name }}"?
         </v-card-text>

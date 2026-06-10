@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="2">
-    <v-card-title>{{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}</v-card-title>
+    <v-card-title class="text-wrap">{{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}</v-card-title>
 
     <v-card-text>
       <v-alert v-if="error" type="error" variant="tonal" class="mb-4" closable @click:close="error = ''">
@@ -184,7 +184,7 @@
 
     <v-dialog v-model="showCategoryDialog" max-width="400">
       <v-card>
-        <v-card-title>Nueva Categoría</v-card-title>
+        <v-card-title class="text-wrap">Nueva Categoría</v-card-title>
         <v-card-text>
           <v-alert v-if="catError" type="error" variant="tonal" class="mb-4" closable @click:close="catError = ''">
             {{ catError }}
@@ -213,7 +213,7 @@
 
     <v-dialog v-model="showWarehouseDialog" max-width="500">
       <v-card>
-        <v-card-title>Nueva Bodega</v-card-title>
+        <v-card-title class="text-wrap">Nueva Bodega</v-card-title>
         <v-card-text>
           <v-alert v-if="whError" type="error" variant="tonal" class="mb-4" closable @click:close="whError = ''">
             {{ whError }}

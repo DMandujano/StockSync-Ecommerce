@@ -3,7 +3,7 @@
 
     <!-- Encabezado -->
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold">
+      <h1 class="text-h5 text-md-h4 font-weight-bold">
         Gestión de Despachos
       </h1>
 
@@ -25,7 +25,7 @@
             Preparando
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ preparandoCount }}
           </div>
         </v-card>
@@ -41,7 +41,7 @@
             En Ruta
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ enRutaCount }}
           </div>
         </v-card>
@@ -57,7 +57,7 @@
             Entregados Hoy
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ entregadosHoyCount }}
           </div>
         </v-card>

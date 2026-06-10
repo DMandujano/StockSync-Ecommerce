@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold">
+      <h1 class="text-h5 text-md-h4 font-weight-bold">
         Visores del Sistema
       </h1>
       <p class="text-medium-emphasis">

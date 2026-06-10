@@ -2,7 +2,7 @@
 <template>
   <v-container fluid>
     <div class="d-flex justify-space-between align-center mb-6">
-      <h1 class="text-h4 font-weight-bold mb-0">
+      <h1 class="text-h5 text-md-h4 font-weight-bold mb-0">
         Ventas del Local
       </h1>
       <v-btn
@@ -19,7 +19,7 @@
         <v-card rounded="xl">
           <v-card-text>
             <div class="text-caption">Ventas Hoy</div>
-            <div class="text-h4 font-weight-bold">{{ formatearDinero(ventasHoyTotal) }}</div>
+            <div class="text-h5 text-md-h4 font-weight-bold">{{ formatearDinero(ventasHoyTotal) }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -28,7 +28,7 @@
         <v-card rounded="xl">
           <v-card-text>
             <div class="text-caption">Productos Vendidos Hoy</div>
-            <div class="text-h4 font-weight-bold">{{ productosVendidosHoy }}</div>
+            <div class="text-h5 text-md-h4 font-weight-bold">{{ productosVendidosHoy }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -37,14 +37,14 @@
         <v-card rounded="xl">
           <v-card-text>
             <div class="text-caption">Boletas Emitidas Hoy</div>
-            <div class="text-h4 font-weight-bold">{{ boletasEmitidasHoy }}</div>
+            <div class="text-h5 text-md-h4 font-weight-bold">{{ boletasEmitidasHoy }}</div>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
     <v-card rounded="xl" class="mt-6">
-      <v-card-title>Registrar Nueva Venta</v-card-title>
+      <v-card-title class="text-wrap">Registrar Nueva Venta</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="registrarVenta">
           <v-row>

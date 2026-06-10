@@ -18,7 +18,7 @@
               <template v-slot:prepend>
                 <v-icon :icon="isLocalView ? 'mdi-store' : 'mdi-warehouse'" size="large" color="primary" class="mr-3" />
               </template>
-              <v-card-title>{{ wh.name }}</v-card-title>
+              <v-card-title class="text-wrap">{{ wh.name }}</v-card-title>
               <v-card-subtitle>Cód: {{ wh.code }}</v-card-subtitle>
             </v-card-item>
 

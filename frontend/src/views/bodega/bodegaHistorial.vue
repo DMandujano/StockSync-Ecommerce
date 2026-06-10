@@ -2,7 +2,7 @@
   <v-container fluid class="pa-6">
 
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold">
+      <h1 class="text-h5 text-md-h4 font-weight-bold">
         Recepciones y Observaciones
       </h1>
 
@@ -27,7 +27,7 @@
             Recepciones Correctas
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ correctasCount }}
           </div>
         </v-card>
@@ -46,7 +46,7 @@
             Con Observaciones
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ observacionesCount }}
           </div>
         </v-card>
@@ -65,7 +65,7 @@
             Total Entregas
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ totalEntregasCount }}
           </div>
         </v-card>
@@ -76,7 +76,7 @@
     <!-- Tabla -->
     <v-card elevation="4">
 
-      <v-card-title>
+      <v-card-title class="text-wrap">
         Historial de Recepciones
       </v-card-title>
 
@@ -84,7 +84,7 @@
 
       <div class="table-wrapper">
 
-        <v-table>
+        <v-table class="text-no-wrap">
 
           <thead>
           <tr>

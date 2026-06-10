@@ -53,7 +53,7 @@
 
     <section class="features-section py-12 bg-surface">
       <v-container>
-        <h2 class="text-h4 text-md-h3 font-weight-bold text-center mb-10">Características</h2>
+        <h2 class="text-h5 text-md-h4 text-md-h3 font-weight-bold text-center mb-10">Características</h2>
         <v-row>
           <v-col v-for="feature in features" :key="feature.title" cols="12" md="4">
             <v-card class="pa-6 text-center h-100" elevation="2">
@@ -68,7 +68,7 @@
 
     <section class="cta-section py-12 text-center">
       <v-container>
-        <h2 class="text-h4 text-md-h3 font-weight-bold text-white mb-4">¿Listo para gestionar tu inventario?</h2>
+        <h2 class="text-h5 text-md-h4 text-md-h3 font-weight-bold text-white mb-4">¿Listo para gestionar tu inventario?</h2>
         <v-btn
           to="/register"
           size="x-large"

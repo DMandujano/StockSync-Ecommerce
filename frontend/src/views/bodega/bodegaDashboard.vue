@@ -129,7 +129,7 @@
       <v-divider />
 
       <div class="table-wrapper">
-        <v-table>
+        <v-table class="text-no-wrap">
           <thead>
           <tr>
             <th>ID Solicitud</th>

@@ -3,7 +3,7 @@
 
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold">
+      <h1 class="text-h5 text-md-h4 font-weight-bold">
         Inventario de Bodega
       </h1>
 
@@ -28,7 +28,7 @@
             Productos
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ productos.length }}
           </div>
         </v-card>
@@ -47,7 +47,7 @@
             Stock Bajo
           </div>
 
-          <div class="text-h4 font-weight-bold">
+          <div class="text-h5 text-md-h4 font-weight-bold">
             {{ stockBajo }}
           </div>
         </v-card>
@@ -70,14 +70,14 @@
     <!-- Tabla -->
     <v-card>
 
-      <v-card-title>
+      <v-card-title class="text-wrap">
         Inventario General
       </v-card-title>
 
       <v-divider />
 
       <div class="table-wrapper">
-        <v-table>
+        <v-table class="text-no-wrap">
 
           <thead>
           <tr>

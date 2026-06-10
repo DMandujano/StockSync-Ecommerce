@@ -9,7 +9,7 @@
           </v-btn>
         </template>
         <v-card>
-          <v-card-title>Crear Solicitud</v-card-title>
+          <v-card-title class="text-wrap">Crear Solicitud</v-card-title>
           <v-card-text>
             <v-form @submit.prevent="handleCreate" ref="form">
               <v-select

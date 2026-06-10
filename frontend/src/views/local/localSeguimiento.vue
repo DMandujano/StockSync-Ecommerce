@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <h1 class="text-h4 font-weight-bold mb-6">
+    <h1 class="text-h5 text-md-h4 font-weight-bold mb-6">
       Seguimiento de Solicitudes
     </h1>
 
     <v-card>
       <v-card-text>
-        <v-table>
+        <v-table class="text-no-wrap">
           <thead>
           <tr>
             <th>ID</th>

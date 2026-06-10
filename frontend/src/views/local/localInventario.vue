@@ -1,7 +1,7 @@
 <template>
 
   <v-card>
-    <h1 class="text-h4 mb-6">Inventario del Local</h1>
+    <h1 class="text-h5 text-md-h4 mb-6">Inventario del Local</h1>
     <v-card-text>
       <v-alert
           type="warning"
@@ -16,11 +16,11 @@
           variant="outlined"
           class="mb-6"
       >
-        <v-card-title>
+        <v-card-title class="text-wrap">
           Productos que requieren reposición
         </v-card-title>
 
-        <v-table>
+        <v-table class="text-no-wrap">
           <thead>
           <tr>
             <th>Producto</th>
@@ -51,10 +51,10 @@
       </v-card>
 
       <!-- Inventario completo -->
-      <v-card-title>
+      <v-card-title class="text-wrap">
         Inventario
       </v-card-title>
-      <v-table>
+      <v-table class="text-no-wrap">
         <thead>
         <tr>
           <th>Producto</th>

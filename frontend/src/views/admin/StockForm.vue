@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="2">
-    <v-card-title>{{ isEdit ? 'Editar Stock' : 'Nuevo Stock' }}</v-card-title>
+    <v-card-title class="text-wrap">{{ isEdit ? 'Editar Stock' : 'Nuevo Stock' }}</v-card-title>
 
     <v-card-text>
       <v-alert v-if="error" type="error" variant="tonal" class="mb-4" closable @click:close="error = ''">

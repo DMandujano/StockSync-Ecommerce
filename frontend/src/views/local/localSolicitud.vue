@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h4 font-weight-bold mb-4">
+        <h1 class="text-h5 text-md-h4 font-weight-bold mb-4">
           Solicitar Reposición
         </h1>
       </v-col>
@@ -12,7 +12,7 @@
     <v-row>
       <v-col cols="12" md="8">
         <v-card elevation="2">
-          <v-card-title>
+          <v-card-title class="text-wrap">
             Nueva Solicitud
           </v-card-title>
 
@@ -74,7 +74,7 @@
       <!-- Productos con bajo stock -->
       <v-col cols="12" md="4">
         <v-card elevation="2">
-          <v-card-title>
+          <v-card-title class="text-wrap">
             Productos con Bajo Stock
           </v-card-title>
 
@@ -106,11 +106,11 @@
     <v-row class="mt-6">
       <v-col cols="12">
         <v-card elevation="2">
-          <v-card-title>
+          <v-card-title class="text-wrap">
             Estado de Solicitudes
           </v-card-title>
 
-          <v-table>
+          <v-table class="text-no-wrap">
             <thead>
             <tr>
               <th>Producto</th>

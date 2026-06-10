@@ -4,7 +4,7 @@
 
     <v-container fluid class="py-12" max-width="480">
       <v-card class="pa-6" elevation="4">
-        <v-card-title class="text-h4 font-weight-bold text-center mb-2">
+        <v-card-title class="text-h5 text-md-h4 font-weight-bold text-center mb-2">
           Iniciar Sesión
         </v-card-title>
 

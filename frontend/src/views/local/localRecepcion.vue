@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-6">
+    <h1 class="text-h5 text-md-h4 mb-6">
       Recepción de Productos
     </h1>
 
@@ -43,7 +43,7 @@
           cols="12"
       >
         <v-card>
-          <v-card-title>
+          <v-card-title class="text-wrap">
             Solicitud #{{ item.id }}
           </v-card-title>
 
