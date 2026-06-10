@@ -1,8 +1,13 @@
 
 <template>
   <v-app>
+    <v-app-bar class="d-md-none" color="surface" elevation="1">
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-title>StockSync</v-app-bar-title>
+    </v-app-bar>
+
     <v-navigation-drawer
-        permanent
+        v-model="drawer"
         width="250"
         color="surface"
     >
@@ -89,12 +94,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
+
+const drawer = ref(null)
 
 const nombre = computed(() => auth.userName || 'Usuario Local')
 const email = computed(() => auth.userEmail || 'local@stocksync.cl')
@@ -112,7 +119,5 @@ function volverAdmin() {
 }
 </script>
 
-
 <style scoped>
-
 </style>
