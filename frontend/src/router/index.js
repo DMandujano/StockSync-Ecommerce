@@ -175,6 +175,21 @@ const routes = [
         name: 'ProductReception',
         component: () => import('../views/admin/ProductReception.vue'),
       },
+      {
+        path: 'visores',
+        name: 'VistasDashboard',
+        component: () => import('../views/admin/VistasDashboard.vue'),
+      },
+      {
+        path: 'visores/local',
+        name: 'WarehouseViewerLocal',
+        component: () => import('../views/admin/WarehouseViewer.vue'),
+      },
+      {
+        path: 'visores/bodega',
+        name: 'WarehouseViewerBodega',
+        component: () => import('../views/admin/WarehouseViewer.vue'),
+      },
     ],
   },
 ]
@@ -186,15 +201,47 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
+  
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     next('/login')
-  } else if (to.path === '/login' && auth.isAuthenticated) {
-    next('/admin')
-  } else if (auth.isAuthenticated && auth.mustChangePassword && to.name !== 'ChangePassword') {
-    next('/change-password')
-  } else {
-    next()
+    return
   }
+  
+  if (to.path === '/login' && auth.isAuthenticated) {
+    if (auth.isAdmin) next('/admin')
+    else if (auth.isBodega) next('/bodega')
+    else if (auth.isLocal) next('/local')
+    else next('/')
+    return
+  }
+  
+  if (auth.isAuthenticated && auth.mustChangePassword && to.name !== 'ChangePassword') {
+    next('/change-password')
+    return
+  }
+
+  if (to.path.startsWith('/admin') && !auth.isAdmin) {
+    if (auth.isBodega) next('/bodega')
+    else if (auth.isLocal) next('/local')
+    else next('/')
+    return
+  }
+
+  if (to.path.startsWith('/bodega') && !auth.isAdmin && !auth.isBodega) {
+    if (auth.isLocal) next('/local')
+    else if (auth.isAdmin) next('/admin')
+    else next('/')
+    return
+  }
+
+  if (to.path.startsWith('/local') && !auth.isAdmin && !auth.isLocal) {
+    if (auth.isBodega) next('/bodega')
+    else if (auth.isAdmin) next('/admin')
+    else next('/')
+    return
+  }
+
+  next()
 })
 
 export default router

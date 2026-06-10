@@ -97,7 +97,15 @@ async function handleLogin() {
     if (data.forcePasswordChange) {
       router.push('/change-password')
     } else {
-      router.push('/admin')
+      if (auth.isAdmin) {
+        router.push('/admin')
+      } else if (auth.isBodega) {
+        router.push('/bodega')
+      } else if (auth.isLocal) {
+        router.push('/local')
+      } else {
+        router.push('/')
+      }
     }
   } catch (e) {
     error.value = e.response?.data?.message || 'Credenciales inválidas'

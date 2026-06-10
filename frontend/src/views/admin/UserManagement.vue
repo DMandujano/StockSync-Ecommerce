@@ -98,6 +98,7 @@
                       :color="u.enabled ? 'error' : 'success'" 
                       @click="toggleActive(u)">
                     </v-btn>
+                    <v-btn icon="mdi-delete" variant="text" size="small" color="error" @click="openDeleteDialog(u)"></v-btn>
                   </td>
                 </tr>
                 <tr v-if="!store.users.length && !loading">
@@ -141,6 +142,20 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="deleteDialog" max-width="400">
+        <v-card>
+          <v-card-title>Eliminar Usuario</v-card-title>
+          <v-card-text>
+            ¿Estás seguro de que deseas eliminar al usuario <strong>{{ userToDelete?.nombre || userToDelete?.email }}</strong>? Esta acción no se puede deshacer.
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn variant="text" @click="deleteDialog = false">Cancelar</v-btn>
+            <v-btn color="error" @click="handleDelete" :loading="deleting">Eliminar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-col>
   </v-row>
 </template>
@@ -159,6 +174,9 @@ const editDialog = ref(false)
 const inviteError = ref('')
 const inviteSuccess = ref(false)
 const tempPassword = ref('')
+const deleteDialog = ref(false)
+const userToDelete = ref(null)
+const deleting = ref(false)
 
 const form = ref({
   email: '',
@@ -235,6 +253,23 @@ async function toggleActive(u) {
     await store.update(u.id, { active: !u.enabled })
   } catch (e) {
     alert('Error al cambiar estado')
+  }
+}
+
+function openDeleteDialog(u) {
+  userToDelete.value = u
+  deleteDialog.value = true
+}
+
+async function handleDelete() {
+  deleting.value = true
+  try {
+    await store.remove(userToDelete.value.id)
+    deleteDialog.value = false
+  } catch (e) {
+    alert('Error al eliminar usuario')
+  } finally {
+    deleting.value = false
   }
 }
 

@@ -95,21 +95,21 @@
               v-for="producto in productosFiltrados"
               :key="producto.id"
           >
-            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.productName }}</td>
 
             <td>{{ producto.sku }}</td>
 
-            <td>{{ producto.ubicacion }}</td>
+            <td>{{ producto.warehouseName }}</td>
 
-            <td>{{ producto.stock }}</td>
+            <td>{{ producto.quantity }}</td>
 
             <td>
               <v-chip
-                  :color="estadoColor(producto.stock)"
+                  :color="estadoColor(producto.quantity)"
                   size="small"
                   variant="tonal"
               >
-                {{ estadoTexto(producto.stock) }}
+                {{ estadoTexto(producto.quantity) }}
               </v-chip>
             </td>
           </tr>
@@ -125,42 +125,40 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useStockStore } from '../../stores/stock'
+import { useAuthStore } from '../../stores/auth'
+
+const stockStore = useStockStore()
+const authStore = useAuthStore()
 
 const busqueda = ref('')
+const productos = ref([])
+const loading = ref(false)
 
-const productos = ref([
-  {
-    id: 1,
-    nombre: 'Coca Cola 1.5L',
-    sku: 'CC1500',
-    ubicacion: 'Pasillo A',
-    stock: 150
-  },
-  {
-    id: 2,
-    nombre: 'Papas Fritas',
-    sku: 'PF001',
-    ubicacion: 'Pasillo B',
-    stock: 15
-  },
-  {
-    id: 3,
-    nombre: 'Agua Mineral',
-    sku: 'AM001',
-    ubicacion: 'Pasillo C',
-    stock: 8
+onMounted(async () => {
+  loading.value = true
+  try {
+    if (authStore.assignedWarehouseId) {
+      productos.value = await stockStore.fetchByWarehouse(authStore.assignedWarehouseId)
+    }
+  } catch (error) {
+    console.error('Error fetching warehouse stock:', error)
+  } finally {
+    loading.value = false
   }
-])
+})
 
 const productosFiltrados = computed(() => {
+  const search = busqueda.value || ''
   return productos.value.filter(p =>
-      p.nombre.toLowerCase().includes(busqueda.value.toLowerCase())
+      p.productName?.toLowerCase().includes(search.toLowerCase()) ||
+      p.sku?.toLowerCase().includes(search.toLowerCase())
   )
 })
 
 const stockBajo = computed(() => {
-  return productos.value.filter(p => p.stock <= 20).length
+  return productos.value.filter(p => p.quantity <= 20).length
 })
 
 function estadoColor(stock) {

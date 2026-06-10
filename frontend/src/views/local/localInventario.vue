@@ -33,10 +33,10 @@
               v-for="producto in bajoStock"
               :key="producto.id"
           >
-            <td>{{ producto.name }}</td>
+            <td>{{ producto.productName }}</td>
             <td>
               <v-chip color="error">
-                {{ obtenerStock(producto) }}
+                {{ producto.quantity }}
               </v-chip>
             </td>
           </tr>
@@ -70,20 +70,20 @@
             v-for="producto in products"
             :key="producto.id"
         >
-          <td>{{ producto.name }}</td>
+          <td>{{ producto.productName }}</td>
           <td>{{ producto.sku }}</td>
-          <td>{{ producto.categoryName }}</td>
+          <td>{{ producto.categoryName || 'N/A' }}</td>
 
           <td>
-            {{ obtenerStock(producto) }}
+            {{ producto.quantity }}
           </td>
 
           <td>
             <v-chip
-                :color="obtenerStock(producto) <= 10 ? 'error' : 'success'"
+                :color="producto.quantity <= 10 ? 'error' : 'success'"
                 size="small"
             >
-              {{ obtenerStock(producto) <= 10 ? 'Bajo Stock' : 'Disponible' }}
+              {{ producto.quantity <= 10 ? 'Bajo Stock' : 'Disponible' }}
             </v-chip>
           </td>
         </tr>
@@ -96,27 +96,27 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useProductsStore } from '../../stores/products'
+import { useStockStore } from '../../stores/stock'
+import { useAuthStore } from '../../stores/auth'
 
-const store = useProductsStore()
+const store = useStockStore()
+const authStore = useAuthStore()
 
 const products = ref([])
-
-function obtenerStock(producto) {
-  if (!producto.warehouseStocks?.length) return 0
-
-  return producto.warehouseStocks.reduce(
-      (acc, item) => acc + item.quantity,
-      0
-  )
-}
+const loading = ref(false)
 
 const bajoStock = computed(() =>
-    products.value.filter(product => obtenerStock(product) <= 10)
+    products.value.filter(product => product.quantity <= 10)
 )
 
 onMounted(async () => {
-  await store.fetchAll()
-  products.value = [...store.products]
+  loading.value = true
+  try {
+    if (authStore.assignedWarehouseId) {
+      products.value = await store.fetchByWarehouse(authStore.assignedWarehouseId)
+    }
+  } finally {
+    loading.value = false
+  }
 })
 </script>

@@ -28,7 +28,7 @@
           </div>
 
           <div class="text-h4 font-weight-bold">
-            12
+            {{ correctasCount }}
           </div>
         </v-card>
       </v-col>
@@ -47,7 +47,7 @@
           </div>
 
           <div class="text-h4 font-weight-bold">
-            3
+            {{ observacionesCount }}
           </div>
         </v-card>
       </v-col>
@@ -66,7 +66,7 @@
           </div>
 
           <div class="text-h4 font-weight-bold">
-            15
+            {{ totalEntregasCount }}
           </div>
         </v-card>
       </v-col>
@@ -104,36 +104,23 @@
           >
             <td>{{ item.id }}</td>
 
-            <td>{{ item.local }}</td>
+            <td>{{ item.destinationWarehouseName }}</td>
 
-            <td>{{ item.fecha }}</td>
+            <td>{{ new Date(item.updatedAt || item.createdAt).toLocaleDateString() }}</td>
 
             <td>
               <v-chip
-                  :color="item.observacion ? 'warning' : 'success'"
+                  :color="'success'"
                   variant="tonal"
               >
-                {{
-                  item.observacion
-                      ? 'Observado'
-                      : 'Recibido'
-                }}
+                Recibido
               </v-chip>
             </td>
 
             <td>
-
-              <span v-if="item.observacion">
-                {{ item.observacion }}
-              </span>
-
-              <span
-                  v-else
-                  class="text-success"
-              >
+              <span class="text-success">
                 Sin observaciones
               </span>
-
             </td>
 
           </tr>
@@ -150,33 +137,32 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useStockRequestsStore } from '../../stores/stockRequests'
+import { useAuthStore } from '../../stores/auth'
 
-const recepciones = [
-  {
-    id: 'DESP-001',
-    local: 'Providencia',
-    fecha: '10/06/2026',
-    observacion: null
-  },
-  {
-    id: 'DESP-002',
-    local: 'Maipú',
-    fecha: '10/06/2026',
-    observacion: 'Faltaron 5 Coca Cola'
-  },
-  {
-    id: 'DESP-003',
-    local: 'Santiago Centro',
-    fecha: '09/06/2026',
-    observacion: null
-  },
-  {
-    id: 'DESP-004',
-    local: 'La Florida',
-    fecha: '09/06/2026',
-    observacion: 'Producto dañado'
+const store = useStockRequestsStore()
+const authStore = useAuthStore()
+const loading = ref(false)
+
+onMounted(async () => {
+  loading.value = true
+  try {
+    if (authStore.assignedWarehouseId) {
+      await store.fetchIncoming(authStore.assignedWarehouseId)
+    }
+  } finally {
+    loading.value = false
   }
-]
+})
+
+const recepciones = computed(() => {
+  return store.incomingRequests.filter(r => r.status === 'RECIBIDO')
+})
+
+const correctasCount = computed(() => recepciones.value.length)
+const observacionesCount = computed(() => 0) // El backend actual no soporta observaciones en StockRequest
+const totalEntregasCount = computed(() => correctasCount.value + observacionesCount.value)
 
 </script>
 

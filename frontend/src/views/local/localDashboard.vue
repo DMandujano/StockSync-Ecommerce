@@ -7,7 +7,7 @@
         <v-card color="primary" dark>
           <v-card-text>
             <div class="text-h6">Ventas Hoy</div>
-            <div class="text-h4">$850.000</div>
+            <div class="text-h4">{{ formatearDinero(ventasHoyTotal) }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -34,7 +34,7 @@
         <v-card color="info" dark>
           <v-card-text>
             <div class="text-h6">Solicitudes</div>
-            <div class="text-h4">3</div>
+            <div class="text-h4">{{ solicitudes.length }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -61,9 +61,9 @@
             v-for="producto in bajoStock"
             :key="producto.id"
         >
-          <td>{{ producto.name }}</td>
+          <td>{{ producto.productName }}</td>
           <td>{{ producto.sku }}</td>
-          <td>{{ obtenerStock(producto) }}</td>
+          <td>{{ producto.quantity }}</td>
           <td>
             <v-chip color="error" size="small">
               Reponer
@@ -96,24 +96,20 @@
         </thead>
 
         <tbody>
-        <tr>
-          <td>#SOL-001</td>
-          <td>05/06/2026</td>
+        <tr
+            v-for="solicitud in ultimasSolicitudes"
+            :key="solicitud.id"
+        >
+          <td>#{{ solicitud.id }}</td>
+          <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
           <td>
-            <v-chip color="warning">
-              Pendiente
+            <v-chip :color="getColor(solicitud.status)">
+              {{ solicitud.status }}
             </v-chip>
           </td>
         </tr>
-
-        <tr>
-          <td>#SOL-002</td>
-          <td>04/06/2026</td>
-          <td>
-            <v-chip color="success">
-              Enviada
-            </v-chip>
-          </td>
+        <tr v-if="ultimasSolicitudes.length === 0">
+          <td colspan="3" class="text-center">No hay solicitudes</td>
         </tr>
         </tbody>
       </v-table>
@@ -123,29 +119,74 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useProductsStore } from '../../stores/products'
+import { useAuthStore } from '../../stores/auth'
+import { useStockStore } from '../../stores/stock'
+import { useStockRequestsStore } from '../../stores/stockRequests'
 
-const store = useProductsStore()
+const authStore = useAuthStore()
+const stockStore = useStockStore()
+const requestsStore = useStockRequestsStore()
 
-const products = ref([])
-
-const totalProductos = computed(() => products.value.length)
-
-const bajoStock = computed(() =>
-    products.value.filter(product => obtenerStock(product) <= 10)
-)
-
-function obtenerStock(producto) {
-  if (!producto.warehouseStocks?.length) return 0
-
-  return producto.warehouseStocks.reduce(
-      (acc, item) => acc + item.quantity,
-      0
-  )
-}
+const stockData = ref([])
+const salesData = ref([])
 
 onMounted(async () => {
-  await store.fetchAll()
-  products.value = [...store.products]
+  if (authStore.assignedWarehouseId) {
+    await Promise.all([
+      requestsStore.fetchIncoming(authStore.assignedWarehouseId),
+      fetchStock(),
+      fetchSales()
+    ])
+  }
 })
+
+async function fetchStock() {
+  stockData.value = await stockStore.fetchByWarehouse(authStore.assignedWarehouseId)
+}
+
+async function fetchSales() {
+  salesData.value = await stockStore.fetchMovements('VENTA', authStore.assignedWarehouseId)
+}
+
+const ventasHoyTotal = computed(() => {
+  const hoy = new Date().toLocaleDateString()
+  const ventasHoy = salesData.value.filter(v => new Date(v.createdAt).toLocaleDateString() === hoy)
+  return ventasHoy.reduce((acc, v) => acc + (v.totalPrice || 0), 0)
+})
+
+function formatearDinero(valor) {
+  if (!valor) return '$0'
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(valor)
+}
+
+const totalProductos = computed(() => stockData.value.length)
+
+const bajoStock = computed(() =>
+    stockData.value.filter(product => product.quantity <= 10)
+)
+
+const solicitudes = computed(() => requestsStore.incomingRequests)
+
+const ultimasSolicitudes = computed(() => {
+  return [...requestsStore.incomingRequests]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 5)
+})
+
+function getColor(estado) {
+  switch (estado) {
+    case 'PENDIENTE':
+      return 'warning'
+    case 'APROBADO':
+      return 'success'
+    case 'ENVIADO':
+      return 'info'
+    case 'RECIBIDO':
+      return 'primary'
+    case 'RECHAZADO':
+      return 'error'
+    default:
+      return 'grey'
+  }
+}
 </script>

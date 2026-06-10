@@ -24,6 +24,7 @@
             prepend-icon="mdi-view-dashboard"
             title="Dashboard"
             to="/local"
+            exact
         />
 
         <v-list-item
@@ -60,7 +61,17 @@
       <template #append>
         <div class="pa-4">
           <v-btn
-              to="/login"
+              v-if="auth.isAdmin"
+              @click="volverAdmin"
+              block
+              prepend-icon="mdi-arrow-left"
+              color="info"
+              class="mb-4"
+          >
+            Volver al Admin
+          </v-btn>
+          <v-btn
+              @click="handleLogout"
               block
               prepend-icon="mdi-logout"
               color="error"
@@ -78,10 +89,27 @@
 </template>
 
 <script setup>
-  const nombre = 'Usuario Local'
-  const email = 'local@stocksync.cl'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
-  const inicial = nombre.charAt(0)
+const auth = useAuthStore()
+const router = useRouter()
+
+const nombre = computed(() => auth.userName || 'Usuario Local')
+const email = computed(() => auth.userEmail || 'local@stocksync.cl')
+
+const inicial = computed(() => nombre.value.charAt(0).toUpperCase())
+
+function handleLogout() {
+  auth.logout()
+  router.push('/login')
+}
+
+function volverAdmin() {
+  auth.setAdminViewWarehouseId(null)
+  router.push('/admin')
+}
 </script>
 
 
