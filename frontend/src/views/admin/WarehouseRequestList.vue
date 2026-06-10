@@ -104,16 +104,7 @@ import { getProducts } from '../../api/products'
 import { getWarehouses } from '../../api/warehouses'
 import { useAuthStore } from '../../stores/auth'
 
-//const auth = useAuthStore()
-const auth = {
-  isAdmin: true,
-  user: {
-    assignedWarehouse: {
-      id: 1
-    }
-  }
-}
-
+const auth = useAuthStore()
 const requests = ref([])
 const products = ref([])
 const warehouses = ref([])
