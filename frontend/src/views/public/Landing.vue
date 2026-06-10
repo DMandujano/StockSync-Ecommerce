@@ -23,29 +23,32 @@
               gestionar productos y facilitar la administración en tiempo real.
             </p>
             <br>
-            <v-btn
-                to="/login"
-                color="primary"
-                size="x-large"
-                variant="flat"
-                rounded="xl"
-                elevation="4"
-                class="mr-4 mb-2 px-8"
-            >
-              <v-icon start>mdi-login</v-icon>
-              Iniciar Sesión
-            </v-btn>
-            <v-btn
-                to="/register"
-                size="x-large"
-                variant="outlined"
-                rounded="xl"
-                class="mb-2 px-8 text-white"
-                style="border-color: white;"
-            >
-              <v-icon start color="white">mdi-account-plus</v-icon>
-              Registrarse
-            </v-btn>
+            <div class="d-flex flex-column flex-sm-row justify-center align-center w-100 px-4">
+              <v-btn
+                  to="/login"
+                  color="primary"
+                  size="x-large"
+                  variant="flat"
+                  rounded="xl"
+                  elevation="4"
+                  class="mb-4 mb-sm-0 mr-sm-4 px-8 w-100"
+                  style="max-width: 300px;"
+              >
+                <v-icon start>mdi-login</v-icon>
+                Iniciar Sesión
+              </v-btn>
+              <v-btn
+                  to="/register"
+                  size="x-large"
+                  variant="outlined"
+                  rounded="xl"
+                  class="px-8 text-white w-100"
+                  style="border-color: white; max-width: 300px;"
+              >
+                <v-icon start color="white">mdi-account-plus</v-icon>
+                Registrarse
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-container>
