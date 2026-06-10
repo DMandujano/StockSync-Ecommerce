@@ -1,18 +1,14 @@
 
 <template>
-  <v-app>
-    <v-app-bar class="d-md-none" color="surface" elevation="1">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>StockSync</v-app-bar-title>
-    </v-app-bar>
-
+  <v-layout>
     <v-navigation-drawer
         v-model="drawer"
-        :permanent="!mobile"
-        :temporary="mobile"
-        width="250"
-        color="surface"
+        :rail="rail && !mobile"
+        :permanent="mdAndUp"
+        :temporary="smAndDown"
         app
+        width="260"
+        :rail-width="64"
     >
       <div class="pa-4 d-flex align-center">
         <v-avatar color="primary">
@@ -90,10 +86,20 @@
       </template>
     </v-navigation-drawer>
 
+    <!-- Top bar -->
+    <v-app-bar flat>
+      <v-app-bar-nav-icon @click="toggleDrawer" />
+      <v-app-bar-title>Local</v-app-bar-title>
+      <v-spacer />
+    </v-app-bar>
+
+    <!-- Content -->
     <v-main>
-      <router-view />
+      <v-container fluid class="pa-6">
+        <router-view />
+      </v-container>
     </v-main>
-  </v-app>
+  </v-layout>
 </template>
 
 <script setup>
@@ -104,9 +110,10 @@ import { useDisplay } from 'vuetify'
 
 const auth = useAuthStore()
 const router = useRouter()
-const { mobile } = useDisplay()
+const { mobile, mdAndUp, smAndDown } = useDisplay()
 
-const drawer = ref(!mobile.value)
+const drawer = ref(true)
+const rail = ref(false)
 
 const nombre = computed(() => auth.userName || 'Usuario Local')
 const email = computed(() => auth.userEmail || 'local@stocksync.cl')
@@ -122,7 +129,24 @@ function volverAdmin() {
   auth.setAdminViewWarehouseId(null)
   router.push('/admin')
 }
+
+function toggleDrawer() {
+  if (mobile.value) {
+    drawer.value = !drawer.value
+  } else {
+    rail.value = !rail.value
+  }
+}
 </script>
 
 <style scoped>
+.v-navigation-drawer {
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+.v-list-item {
+  transition: all .2s ease;
+}
+.v-list-item:hover {
+  transform: translateX(4px);
+}
 </style>
