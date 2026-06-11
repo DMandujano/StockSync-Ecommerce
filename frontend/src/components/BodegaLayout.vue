@@ -210,7 +210,7 @@ function toggleTheme() {
           ? 'light'
           : 'dark'
 
-  theme.global.name.value = name
+  theme.change(name)
 
   localStorage.setItem('theme', name)
 

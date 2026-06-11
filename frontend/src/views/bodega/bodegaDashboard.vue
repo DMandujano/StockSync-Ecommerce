@@ -128,18 +128,22 @@
 
       <v-divider />
 
-      <div class="table-wrapper">
-        <v-table class="text-no-wrap">
-          <thead>
+      <ResponsiveTable
+          :loading="loading"
+          :empty="solicitudes.length === 0"
+          empty-text="No hay solicitudes recientes"
+          colspan="4"
+      >
+        <template #headers>
           <tr>
             <th>ID Solicitud</th>
             <th>Local</th>
             <th>Fecha</th>
             <th>Estado</th>
           </tr>
-          </thead>
+        </template>
 
-          <tbody>
+        <template #body>
           <tr
               v-for="solicitud in solicitudes"
               :key="solicitud.id"
@@ -162,15 +166,36 @@
               </v-chip>
             </td>
           </tr>
-          <tr v-if="loading">
-            <td colspan="4" class="text-center">Cargando...</td>
-          </tr>
-          <tr v-else-if="solicitudes.length === 0">
-            <td colspan="4" class="text-center">No hay solicitudes recientes</td>
-          </tr>
-          </tbody>
-        </v-table>
-      </div>
+        </template>
+
+        <template #cards>
+          <v-card
+              v-for="solicitud in solicitudes"
+              :key="solicitud.id"
+              variant="outlined"
+              class="mb-3"
+          >
+            <v-card-title class="font-weight-bold">
+              {{ solicitud.id }}
+            </v-card-title>
+            <v-card-text>
+              <div><strong>Local:</strong> {{ solicitud.destinationWarehouseName }}</div>
+              <div><strong>Fecha:</strong> {{ new Date(solicitud.createdAt).toLocaleDateString() }}</div>
+              <div>
+                <strong>Estado:</strong>
+                <v-chip
+                    :color="getEstadoColor(solicitud.status)"
+                    variant="tonal"
+                    size="small"
+                    class="ml-1"
+                >
+                  {{ solicitud.status }}
+                </v-chip>
+              </div>
+            </v-card-text>
+          </v-card>
+        </template>
+      </ResponsiveTable>
 
     </v-card>
 
@@ -182,6 +207,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import { useStockStore } from '../../stores/stock'
 import { useStockRequestsStore } from '../../stores/stockRequests'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const authStore = useAuthStore()
 const stockStore = useStockStore()
@@ -293,10 +319,6 @@ function getEstadoColor(estado) {
 .solicitudes-card {
   border-radius: 18px;
   overflow: hidden;
-}
-
-.table-wrapper {
-  overflow-x: auto;
 }
 
 .v-table tbody tr {

@@ -86,27 +86,77 @@
             </v-col>
           </v-row>
         </v-form>
-        <v-table class="text-no-wrap mt-4">
-          <thead>
+        <v-row dense class="mb-4" align="center">
+          <v-col cols="12" sm="4">
+            <v-text-field
+              v-model="filterProduct"
+              label="Buscar producto"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
+          </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              v-model="filterDateFrom"
+              label="Desde"
+              type="date"
+              variant="outlined"
+              density="compact"
+              hide-details
+              clearable
+            />
+          </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              v-model="filterDateTo"
+              label="Hasta"
+              type="date"
+              variant="outlined"
+              density="compact"
+              hide-details
+              clearable
+            />
+          </v-col>
+        </v-row>
+
+        <ResponsiveTable :empty="filteredSales.length === 0" empty-text="No hay ventas registradas" :colspan="4">
+          <template #headers>
             <tr>
               <th>Fecha</th>
               <th>Producto</th>
               <th>Cantidad</th>
               <th>Total</th>
             </tr>
-          </thead>
-          <tbody>
-        <tr v-for="venta in ultimasVentas" :key="venta.id">
-          <td>{{ new Date(venta.createdAt).toLocaleString() }}</td>
-          <td>{{ venta.productName }}</td>
-          <td>{{ venta.quantity }}</td>
-          <td>{{ formatearDinero(venta.totalPrice) }}</td>
-        </tr>
-        <tr v-if="ultimasVentas.length === 0">
-          <td colspan="4" class="text-center">No hay ventas registradas</td>
-        </tr>
-        </tbody>
-        </v-table>
+          </template>
+
+          <template #body>
+            <tr v-for="venta in filteredSales" :key="venta.id">
+              <td>{{ new Date(venta.createdAt).toLocaleString() }}</td>
+              <td>{{ venta.productName }}</td>
+              <td>{{ venta.quantity }}</td>
+              <td>{{ formatearDinero(venta.totalPrice) }}</td>
+            </tr>
+          </template>
+
+          <template #cards>
+            <v-card
+                v-for="venta in filteredSales"
+                :key="venta.id"
+                variant="outlined"
+                class="mb-3"
+            >
+              <v-card-title>{{ new Date(venta.createdAt).toLocaleString() }}</v-card-title>
+              <v-card-text>
+                <div>Producto: {{ venta.productName }}</div>
+                <div>Cantidad: {{ venta.quantity }}</div>
+                <div>Total: {{ formatearDinero(venta.totalPrice) }}</div>
+              </v-card-text>
+            </v-card>
+          </template>
+        </ResponsiveTable>
       </v-card-text>
     </v-card>
 
@@ -119,6 +169,7 @@ import { useAuthStore } from '../../stores/auth'
 import { useStockStore } from '../../stores/stock'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const authStore = useAuthStore()
 const stockStore = useStockStore()
@@ -126,6 +177,9 @@ const stockStore = useStockStore()
 const loading = ref(false)
 const stockData = ref([])
 const salesData = ref([])
+const filterProduct = ref('')
+const filterDateFrom = ref('')
+const filterDateTo = ref('')
 
 const formulario = ref({
   productId: null,
@@ -166,10 +220,27 @@ const boletasEmitidasHoy = computed(() => {
   return ventasHoy.value.length
 })
 
-const ultimasVentas = computed(() => {
-  return [...salesData.value]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 10)
+const filteredSales = computed(() => {
+  let result = [...salesData.value]
+
+  if (filterProduct.value) {
+    const q = filterProduct.value.toLowerCase()
+    result = result.filter(v => v.productName?.toLowerCase().includes(q))
+  }
+
+  if (filterDateFrom.value) {
+    const from = new Date(filterDateFrom.value)
+    from.setHours(0, 0, 0, 0)
+    result = result.filter(v => new Date(v.createdAt) >= from)
+  }
+
+  if (filterDateTo.value) {
+    const to = new Date(filterDateTo.value)
+    to.setHours(23, 59, 59, 999)
+    result = result.filter(v => new Date(v.createdAt) <= to)
+  }
+
+  return result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 })
 
 function formatearDinero(valor) {

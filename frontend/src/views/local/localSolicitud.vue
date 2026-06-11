@@ -110,36 +110,57 @@
             Estado de Solicitudes
           </v-card-title>
 
-          <v-table class="text-no-wrap">
-            <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-            </tr>
-            </thead>
+          <ResponsiveTable :empty="!solicitudes.length" empty-text="No hay solicitudes" :colspan="4">
+            <template #headers>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </template>
 
-            <tbody>
-            <tr
-                v-for="solicitud in solicitudes"
-                :key="solicitud.id"
-            >
-              <td>{{ solicitud.productName }}</td>
-              <td>{{ solicitud.quantity }}</td>
-              <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
+            <template #body>
+              <tr
+                  v-for="solicitud in solicitudes"
+                  :key="solicitud.id"
+              >
+                <td>{{ solicitud.productName }}</td>
+                <td>{{ solicitud.quantity }}</td>
+                <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
 
-              <td>
-                <v-chip
-                    :color="getColor(solicitud.status)"
-                    size="small"
-                >
-                  {{ solicitud.status }}
-                </v-chip>
-              </td>
-            </tr>
-            </tbody>
-          </v-table>
+                <td>
+                  <v-chip
+                      :color="getColor(solicitud.status)"
+                      size="small"
+                  >
+                    {{ solicitud.status }}
+                  </v-chip>
+                </td>
+              </tr>
+            </template>
+
+            <template #cards>
+              <v-card
+                  v-for="solicitud in solicitudes"
+                  :key="solicitud.id"
+                  variant="outlined"
+                  class="mb-3"
+              >
+                <v-card-title>{{ solicitud.productName }}</v-card-title>
+                <v-card-text>
+                  <div>Cantidad: {{ solicitud.quantity }}</div>
+                  <div>Fecha: {{ new Date(solicitud.createdAt).toLocaleDateString() }}</div>
+                  <v-chip
+                      :color="getColor(solicitud.status)"
+                      size="small"
+                  >
+                    {{ solicitud.status }}
+                  </v-chip>
+                </v-card-text>
+              </v-card>
+            </template>
+          </ResponsiveTable>
         </v-card>
       </v-col>
     </v-row>
@@ -153,6 +174,7 @@ import { useStockStore } from '../../stores/stock'
 import { useStockRequestsStore } from '../../stores/stockRequests'
 import { useWarehousesStore } from '../../stores/warehouses'
 import { useProductsStore } from '../../stores/products'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const authStore = useAuthStore()
 const stockStore = useStockStore()
@@ -162,6 +184,8 @@ const productsStore = useProductsStore()
 
 const formRef = ref(null)
 const enviando = ref(false)
+const filterProduct = ref('')
+const filterStatus = ref(null)
 const formulario = ref({
   productId: null,
   quantity: null,
@@ -213,9 +237,32 @@ const bajoStock = computed(() => {
   return stockData.value.filter(s => s.quantity <= 10)
 })
 
+const statusOptions = [
+  { title: 'Pendiente', value: 'PENDIENTE' },
+  { title: 'Aprobado', value: 'APROBADO' },
+  { title: 'Enviado', value: 'ENVIADO' },
+  { title: 'Recibido', value: 'RECIBIDO' },
+  { title: 'Rechazado', value: 'RECHAZADO' },
+]
+
 const solicitudes = computed(() => {
   return [...requestsStore.outgoingRequests]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+})
+
+const filteredSolicitudes = computed(() => {
+  let result = solicitudes.value
+
+  if (filterProduct.value) {
+    const q = filterProduct.value.toLowerCase()
+    result = result.filter(s => s.productName?.toLowerCase().includes(q))
+  }
+
+  if (filterStatus.value) {
+    result = result.filter(s => s.status === filterStatus.value)
+  }
+
+  return result
 })
 
 async function enviarSolicitud() {

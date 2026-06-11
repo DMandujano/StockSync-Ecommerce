@@ -22,4 +22,6 @@ public class LoginRequest {
     @NotBlank(message = "La constasena es obligatoria")
     private String password;
 
+    private boolean rememberMe;
+
 }
