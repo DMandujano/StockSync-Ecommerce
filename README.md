@@ -23,6 +23,17 @@ StockSync nació inicialmente como un proyecto integrador enfocado en brindar un
 
 ---
 
+## 🌟 Funcionalidades Clave
+- **Arquitectura Multi-Tenant:** Aislamiento total de datos por usuario u organización. Lo que registras en tu empresa no se mezcla con otras, asegurando privacidad y escalabilidad B2B.
+- **Punto de Venta Local (POS):** Interfaz fluida para ventas rápidas con soporte para generación de recibos, cálculo automático de totales y rebaja inmediata de inventario.
+- **Gestión Multi-Bodega:** Crea múltiples sucursales, administra el stock independientemente en cada una y realiza transferencias de mercancía seguras entre ellas.
+- **Dashboard Analítico:** Visualización de métricas en tiempo real con gráficos interactivos (Ventas vs Compras, Flujo de Ingresos) utilizando Chart.js.
+- **Exportación a PDF:** Generación de resúmenes diarios de ventas y reportes operativos formateados y listos para imprimir o compartir, gracias a `jsPDF`.
+- **Auditoría de Movimientos:** Trazabilidad absoluta. Cada venta, ajuste o traslado genera un registro automático e inmutable (`StockMovement`) en la base de datos para prevenir pérdidas.
+- **Escáner Integrado:** Uso de la cámara del dispositivo móvil para leer códigos de barras y QR, optimizando procesos logísticos (`vue-qrcode-reader`).
+
+---
+
 ## ⚙️ Tecnologías (Tech Stack)
 
 ### 🎨 Frontend (Cliente)
@@ -32,6 +43,9 @@ StockSync nació inicialmente como un proyecto integrador enfocado en brindar un
 - **Estado Global:** Pinia
 - **Navegación:** Vue Router 4
 - **Herramientas de Hardware:** `vue-qrcode-reader` (Lector de cámara)
+- **Reportes:** `jsPDF` y `jspdf-autotable` (Generación de PDF)
+- **Gráficos:** `Chart.js` y `vue-chartjs`
+- **Testing:** Vitest y Vue Test Utils (Pruebas Unitarias de Stores y Componentes)
 - **Peticiones HTTP:** Axios con interceptores JWT.
 
 ### 🛡️ Backend (Servidor)
@@ -41,6 +55,7 @@ StockSync nació inicialmente como un proyecto integrador enfocado en brindar un
 - **Base de Datos:** PostgreSQL
 - **Migraciones:** Flyway
 - **Mapeo de Datos:** MapStruct
+- **Testing:** JUnit 5, Mockito y Spring Boot Test (Pruebas de Integración y Servicios)
 - **Documentación de API:** Springdoc OpenAPI (Swagger UI)
 
 ### 🐳 Infraestructura
@@ -90,35 +105,13 @@ docker run -p 8080:8080 stocksync-app
 
 ---
 
-## 🤝 ¿Cómo Contribuir? (Contribute)
-
-¡Las contribuciones son bienvenidas! Si deseas mejorar StockSync, agregar una nueva funcionalidad o reportar un error, sigue estos pasos:
-
-1. **Haz un Fork** del repositorio.
-2. **Crea una nueva rama** para tu funcionalidad o corrección:
-   ```bash
-   git checkout -b feature/nueva-funcionalidad
-   ```
-3. **Realiza tus cambios** y asegúrate de probarlos localmente.
-4. **Haz commit** de tus cambios usando mensajes claros (sugerimos usar [Conventional Commits](https://www.conventionalcommits.org/)):
-   ```bash
-   git commit -m "feat: agregar exportación de inventario a PDF"
-   ```
-5. **Haz push** a tu rama:
-   ```bash
-   git push origin feature/nueva-funcionalidad
-   ```
-6. **Abre un Pull Request (PR)** en este repositorio explicando detalladamente los cambios realizados. Nuestro equipo revisará el código y te dará retroalimentación.
-
----
-
 ## 👥 Equipo de Desarrollo
 
-- **Allan Nuñez**
-- **Dafne Mandujano**
-- **Dante Escalona**
-- **Felipe Segovia**
-- **Renato Campos**
+- **Dante Escalona** - Scrum Master / API Developer / Debugger & QA
+- **Dafne Mandujano** - Frontend Lead
+- **Felipe Segovia** - Repo Owner / Support Frontend
+- **Renato Campos** - Logic Specialist
+- **Allan Nuñez** - Mención Honorífica
 
 ---
 *Si encuentras útil este proyecto, ¡no olvides darle una ⭐ en GitHub!*
