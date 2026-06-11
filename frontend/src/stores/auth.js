@@ -44,8 +44,8 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('mustChangePassword', String(forcePasswordChange)) // Forzado estricto a string
     }
 
-    async function login(email, password) {
-        const { data } = await apiLogin(email, password)
+    async function login(email, password, rememberMe = false) {
+        const { data } = await apiLogin(email, password, rememberMe)
         const forceChange = data.forcePasswordChange || false
         setSessionData(data, forceChange)
         return data

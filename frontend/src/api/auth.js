@@ -1,7 +1,7 @@
 import client from './client'
 
-export function login(email, password) {
-  return client.post('/login', { email, password })
+export function login(email, password, rememberMe = false) {
+  return client.post('/login', { email, password, rememberMe })
 }
 
 export function register(nombre, email, password) {

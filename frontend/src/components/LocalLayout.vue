@@ -63,6 +63,13 @@
       </v-list>
 
       <template #append>
+        <v-list-item
+            prepend-icon="mdi-theme-light-dark"
+            title="Tema"
+            rounded="lg"
+            class="mx-2 my-1"
+            @click="toggleTheme"
+        />
         <div class="pa-4">
           <v-btn
               v-if="auth.isAdmin"
@@ -91,6 +98,11 @@
       <v-app-bar-nav-icon @click="toggleDrawer" />
       <v-app-bar-title>Local</v-app-bar-title>
       <v-spacer />
+      <v-btn
+          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+          variant="text"
+          @click="toggleTheme"
+      />
     </v-app-bar>
 
     <!-- Content -->
@@ -106,10 +118,11 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { useDisplay } from 'vuetify'
+import { useDisplay, useTheme } from 'vuetify'
 
 const auth = useAuthStore()
 const router = useRouter()
+const theme = useTheme()
 const { mobile, mdAndUp, smAndDown } = useDisplay()
 
 const drawer = ref(true)
@@ -119,6 +132,14 @@ const nombre = computed(() => auth.userName || 'Usuario Local')
 const email = computed(() => auth.userEmail || 'local@stocksync.cl')
 
 const inicial = computed(() => nombre.value.charAt(0).toUpperCase())
+
+const isDark = computed(() => theme.global.name.value === 'dark')
+
+function toggleTheme() {
+  const name = isDark.value ? 'light' : 'dark'
+  theme.change(name)
+  localStorage.setItem('theme', name)
+}
 
 function handleLogout() {
   auth.logout()

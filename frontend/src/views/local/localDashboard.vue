@@ -63,38 +63,48 @@
         Productos con Bajo Stock
       </v-card-title>
 
-      <v-table class="text-no-wrap">
-        <thead>
-        <tr>
-          <th>Producto</th>
-          <th>SKU</th>
-          <th>Stock</th>
-          <th>Estado</th>
-        </tr>
-        </thead>
+      <ResponsiveTable :empty="!bajoStock.length" empty-text="No hay productos con bajo stock" :colspan="4">
+        <template #headers>
+          <tr>
+            <th>Producto</th>
+            <th>SKU</th>
+            <th>Stock</th>
+            <th>Estado</th>
+          </tr>
+        </template>
 
-        <tbody>
-        <tr
-            v-for="producto in bajoStock"
-            :key="producto.id"
-        >
-          <td>{{ producto.productName }}</td>
-          <td>{{ producto.sku }}</td>
-          <td>{{ producto.quantity }}</td>
-          <td>
-            <v-chip color="error" size="small">
-              Reponer
-            </v-chip>
-          </td>
-        </tr>
+        <template #body>
+          <tr
+              v-for="producto in bajoStock"
+              :key="producto.id"
+          >
+            <td>{{ producto.productName }}</td>
+            <td>{{ producto.sku }}</td>
+            <td>{{ producto.quantity }}</td>
+            <td>
+              <v-chip color="error" size="small">
+                Reponer
+              </v-chip>
+            </td>
+          </tr>
+        </template>
 
-        <tr v-if="!bajoStock.length">
-          <td colspan="4" class="text-center">
-            No hay productos con bajo stock
-          </td>
-        </tr>
-        </tbody>
-      </v-table>
+        <template #cards>
+          <v-card
+              v-for="producto in bajoStock"
+              :key="producto.id"
+              variant="outlined"
+              class="mb-3"
+          >
+            <v-card-title>{{ producto.productName }}</v-card-title>
+            <v-card-text>
+              <div>SKU: {{ producto.sku }}</div>
+              <div>Stock: {{ producto.quantity }}</div>
+              <v-chip color="error" size="small">Reponer</v-chip>
+            </v-card-text>
+          </v-card>
+        </template>
+      </ResponsiveTable>
     </v-card>
 
     <!-- Últimas solicitudes -->
@@ -103,33 +113,45 @@
         Últimas Solicitudes
       </v-card-title>
 
-      <v-table class="text-no-wrap">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Fecha</th>
-          <th>Estado</th>
-        </tr>
-        </thead>
+      <ResponsiveTable :empty="ultimasSolicitudes.length === 0" empty-text="No hay solicitudes" :colspan="3">
+        <template #headers>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </template>
 
-        <tbody>
-        <tr
-            v-for="solicitud in ultimasSolicitudes"
-            :key="solicitud.id"
-        >
-          <td>#{{ solicitud.id }}</td>
-          <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
-          <td>
-            <v-chip :color="getColor(solicitud.status)">
-              {{ solicitud.status }}
-            </v-chip>
-          </td>
-        </tr>
-        <tr v-if="ultimasSolicitudes.length === 0">
-          <td colspan="3" class="text-center">No hay solicitudes</td>
-        </tr>
-        </tbody>
-      </v-table>
+        <template #body>
+          <tr
+              v-for="solicitud in ultimasSolicitudes"
+              :key="solicitud.id"
+          >
+            <td>#{{ solicitud.id }}</td>
+            <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
+            <td>
+              <v-chip :color="getColor(solicitud.status)">
+                {{ solicitud.status }}
+              </v-chip>
+            </td>
+          </tr>
+        </template>
+
+        <template #cards>
+          <v-card
+              v-for="solicitud in ultimasSolicitudes"
+              :key="solicitud.id"
+              variant="outlined"
+              class="mb-3"
+          >
+            <v-card-title>#{{ solicitud.id }}</v-card-title>
+            <v-card-text>
+              <div>Fecha: {{ new Date(solicitud.createdAt).toLocaleDateString() }}</div>
+              <v-chip :color="getColor(solicitud.status)">{{ solicitud.status }}</v-chip>
+            </v-card-text>
+          </v-card>
+        </template>
+      </ResponsiveTable>
     </v-card>
   </v-container>
 </template>
@@ -142,6 +164,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import { useStockStore } from '../../stores/stock'
 import { useStockRequestsStore } from '../../stores/stockRequests'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const authStore = useAuthStore()
 const stockStore = useStockStore()

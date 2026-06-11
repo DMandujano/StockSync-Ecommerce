@@ -6,43 +6,83 @@
 
     <v-card>
       <v-card-text>
-        <v-table class="text-no-wrap">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-          </tr>
-          </thead>
+        <v-row dense class="mb-4" align="center">
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="filterProduct"
+              label="Buscar producto"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-select
+              v-model="filterStatus"
+              :items="statusOptions"
+              label="Estado"
+              clearable
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
+          </v-col>
+        </v-row>
 
-          <tbody>
-          <tr
-              v-for="solicitud in solicitudes"
-              :key="solicitud.id"
-          >
-            <td>#{{ solicitud.id }}</td>
-            <td>{{ solicitud.productName }}</td>
-            <td>{{ solicitud.quantity }}</td>
-            <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
+        <ResponsiveTable :loading="loading" :empty="!loading && filteredSolicitudes.length === 0" empty-text="No hay solicitudes" :colspan="5">
+          <template #headers>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </template>
 
-            <td>
-              <v-chip
-                  :color="estadoColor(solicitud.status)"
-              >
-                {{ solicitud.status }}
-              </v-chip>
-            </td>
-          </tr>
-          <tr v-if="loading">
-            <td colspan="5" class="text-center">Cargando...</td>
-          </tr>
-          <tr v-else-if="solicitudes.length === 0">
-            <td colspan="5" class="text-center">No hay solicitudes</td>
-          </tr>
-          </tbody>
-        </v-table>
+          <template #body>
+            <tr
+                v-for="solicitud in filteredSolicitudes"
+                :key="solicitud.id"
+            >
+              <td>#{{ solicitud.id }}</td>
+              <td>{{ solicitud.productName }}</td>
+              <td>{{ solicitud.quantity }}</td>
+              <td>{{ new Date(solicitud.createdAt).toLocaleDateString() }}</td>
+
+              <td>
+                <v-chip
+                    :color="estadoColor(solicitud.status)"
+                >
+                  {{ solicitud.status }}
+                </v-chip>
+              </td>
+            </tr>
+          </template>
+
+          <template #cards>
+            <v-card
+                v-for="solicitud in filteredSolicitudes"
+                :key="solicitud.id"
+                variant="outlined"
+                class="mb-3"
+            >
+              <v-card-title>#{{ solicitud.id }}</v-card-title>
+              <v-card-text>
+                <div>Producto: {{ solicitud.productName }}</div>
+                <div>Cantidad: {{ solicitud.quantity }}</div>
+                <div>Fecha: {{ new Date(solicitud.createdAt).toLocaleDateString() }}</div>
+                <v-chip
+                    :color="estadoColor(solicitud.status)"
+                >
+                  {{ solicitud.status }}
+                </v-chip>
+              </v-card-text>
+            </v-card>
+          </template>
+        </ResponsiveTable>
       </v-card-text>
     </v-card>
   </v-container>
@@ -52,10 +92,21 @@
 import { ref, computed, onMounted } from 'vue'
 import { useStockRequestsStore } from '../../stores/stockRequests'
 import { useAuthStore } from '../../stores/auth'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const store = useStockRequestsStore()
 const authStore = useAuthStore()
 const loading = ref(false)
+const filterProduct = ref('')
+const filterStatus = ref(null)
+
+const statusOptions = [
+  { title: 'Pendiente', value: 'PENDIENTE' },
+  { title: 'Aprobado', value: 'APROBADO' },
+  { title: 'Enviado', value: 'ENVIADO' },
+  { title: 'Recibido', value: 'RECIBIDO' },
+  { title: 'Rechazado', value: 'RECHAZADO' },
+]
 
 onMounted(async () => {
   loading.value = true
@@ -71,6 +122,21 @@ onMounted(async () => {
 const solicitudes = computed(() => {
   return [...store.outgoingRequests]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+})
+
+const filteredSolicitudes = computed(() => {
+  let result = solicitudes.value
+
+  if (filterProduct.value) {
+    const q = filterProduct.value.toLowerCase()
+    result = result.filter(s => s.productName?.toLowerCase().includes(q))
+  }
+
+  if (filterStatus.value) {
+    result = result.filter(s => s.status === filterStatus.value)
+  }
+
+  return result
 })
 
 function estadoColor(estado) {

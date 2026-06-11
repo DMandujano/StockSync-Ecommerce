@@ -10,48 +10,55 @@
     <v-card-text>
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
-      <div class="table-container">
-        <v-table class="text-no-wrap" density="comfortable">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Dirección</th>
-              <th>Ciudad</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="wh in warehouses" :key="wh.id">
-              <td><code>{{ wh.code }}</code></td>
-              <td class="font-weight-medium">{{ wh.name }}</td>
-              <td>{{ wh.address }}</td>
-              <td>{{ wh.city }}</td>
-              <td>
-                <v-btn
-                  icon="mdi-pencil"
-                  variant="text"
-                  color="primary"
-                  size="small"
-                  :to="`/admin/bodegas/editar/${wh.id}`"
-                />
-                <v-btn
-                  icon="mdi-delete"
-                  variant="text"
-                  color="error"
-                  size="small"
-                  @click="confirmDelete(wh)"
-                />
-              </td>
-            </tr>
-            <tr v-if="!warehouses.length && !loading">
-              <td colspan="5" class="text-center text-medium-emphasis py-6">
-                No hay locales ni bodegas registradas
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </div>
+      <ResponsiveTable :loading="loading" :empty="!warehouses.length" empty-text="No hay locales ni bodegas registradas" :colspan="5">
+        <template #headers>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Ciudad</th>
+            <th>Acciones</th>
+          </tr>
+        </template>
+        <template #body>
+          <tr v-for="wh in warehouses" :key="wh.id">
+            <td><code>{{ wh.code }}</code></td>
+            <td class="font-weight-medium">{{ wh.name }}</td>
+            <td>{{ wh.address }}</td>
+            <td>{{ wh.city }}</td>
+            <td>
+              <v-btn
+                icon="mdi-pencil"
+                variant="text"
+                color="primary"
+                size="small"
+                :to="`/admin/bodegas/editar/${wh.id}`"
+              />
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                color="error"
+                size="small"
+                @click="confirmDelete(wh)"
+              />
+            </td>
+          </tr>
+        </template>
+        <template #cards>
+          <v-card v-for="wh in warehouses" :key="wh.id" variant="outlined" class="mb-3">
+            <v-card-title>{{ wh.name }}</v-card-title>
+            <v-card-text>
+              <div><strong>Código:</strong> <code>{{ wh.code }}</code></div>
+              <div><strong>Dirección:</strong> {{ wh.address }}</div>
+              <div><strong>Ciudad:</strong> {{ wh.city }}</div>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn icon="mdi-pencil" variant="text" color="primary" size="small" :to="`/admin/bodegas/editar/${wh.id}`" />
+              <v-btn icon="mdi-delete" variant="text" color="error" size="small" @click="confirmDelete(wh)" />
+            </v-card-actions>
+          </v-card>
+        </template>
+      </ResponsiveTable>
     </v-card-text>
 
     <v-dialog v-model="deleteDialog" max-width="400" width="95%">
@@ -75,6 +82,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useWarehousesStore } from '../../stores/warehouses'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const store = useWarehousesStore()
 const warehouses = ref([])
@@ -113,48 +121,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
 
-.table-container {
-  overflow-x: auto;
-  width: 100%;
-}
-
-@media (max-width: 960px) {
-
-  .table-container {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  :deep(.v-table) {
-    min-width: 700px;
-  }
-
-}
-
-@media (max-width: 600px) {
-
-  :deep(.v-card-title) {
-    padding: 16px;
-  }
-
-  :deep(.v-card-text) {
-    padding: 12px;
-  }
-
-  .create-btn {
-    width: 100%;
-  }
-
-  :deep(.v-dialog .v-card-actions) {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  :deep(.v-dialog .v-btn) {
-    width: 100%;
-  }
-
-}
-
-</style>
