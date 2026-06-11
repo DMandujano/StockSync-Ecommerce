@@ -117,8 +117,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import { useStockStore } from '../../stores/stock'
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+import { jsPDF } from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 const authStore = useAuthStore()
 const stockStore = useStockStore()
@@ -227,7 +227,7 @@ function exportarPDF() {
     formatearDinero(venta.totalPrice)
   ])
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: 60,
     head: [columnas],
     body: filas,
