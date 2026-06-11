@@ -30,16 +30,17 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(UserDetails userDetails, boolean rememberMe) {
+        long expirationMs = rememberMe ? 1000L * 60 * 60 * 24 * 7 : 1000L * 60 * 60 * 24;
+        return generateToken(new HashMap<>(), userDetails, expirationMs);
     }
 
-    public String generateToken(Map<String, Object> extraclaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraclaims, UserDetails userDetails, long expirationMs) {
         return Jwts.builder()
                 .claims(extraclaims)
-                .subject(userDetails.getUsername()) // Corregido punto por coma flotante en el formateo original
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date(currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // CORREGIDO: 1000ms * 60s * 60m * 24h para que sean 24 horas reales
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSignInKey())
                 .compact();
     }

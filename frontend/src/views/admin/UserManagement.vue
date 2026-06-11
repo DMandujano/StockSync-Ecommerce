@@ -62,53 +62,100 @@
         <v-card-text>
           <v-progress-linear v-if="loading" indeterminate color="primary" />
 
-          <div class="overflow-x-auto">
-            <v-table class="text-no-wrap" density="comfortable">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Nombre</th>
-                  <th>Rol</th>
-                  <th>Bodega</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="u in store.users" :key="u.id">
-                  <td>{{ u.email }}</td>
-                  <td>{{ u.nombre }}</td>
-                  <td>
-                    <v-chip :color="chipColor(u.role)" size="small" variant="tonal">
-                      {{ u.role }}
-                    </v-chip>
-                  </td>
-                  <td>{{ u.assignedWarehouse?.name || 'Ninguna' }}</td>
-                  <td>
-                    <v-chip :color="u.enabled ? 'success' : 'error'" size="small" variant="tonal">
-                      {{ u.enabled ? 'Activo' : 'Inactivo' }}
-                    </v-chip>
-                  </td>
-                  <td>
-                    <v-btn icon="mdi-pencil" variant="text" size="small" color="primary" @click="openEditDialog(u)"></v-btn>
-                    <v-btn 
-                      :icon="u.enabled ? 'mdi-account-off' : 'mdi-account-check'" 
-                      variant="text" 
-                      size="small" 
-                      :color="u.enabled ? 'error' : 'success'" 
-                      @click="toggleActive(u)">
-                    </v-btn>
-                    <v-btn icon="mdi-delete" variant="text" size="small" color="error" @click="openDeleteDialog(u)"></v-btn>
-                  </td>
-                </tr>
-                <tr v-if="!store.users.length && !loading">
-                  <td colspan="6" class="text-center text-medium-emphasis py-6">
-                    No hay usuarios registrados
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
-          </div>
+          <v-row dense class="mb-4" align="center">
+            <v-col cols="12" sm="4">
+              <v-text-field
+                v-model="filterText"
+                label="Buscar email o nombre"
+                prepend-inner-icon="mdi-magnify"
+                clearable
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-select
+                v-model="filterRole"
+                :items="roles"
+                item-title="label"
+                item-value="value"
+                label="Rol"
+                clearable
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-select
+                v-model="filterStatus"
+                :items="statusOptions"
+                label="Estado"
+                clearable
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </v-col>
+          </v-row>
+
+          <ResponsiveTable :loading="loading" :empty="!filteredUsers.length" empty-text="No hay usuarios registrados" :colspan="6">
+            <template #headers>
+              <tr>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th>Bodega</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </template>
+            <template #body>
+              <tr v-for="u in filteredUsers" :key="u.id">
+                <td>{{ u.email }}</td>
+                <td>{{ u.nombre }}</td>
+                <td>
+                  <v-chip :color="chipColor(u.role)" size="small" variant="tonal">
+                    {{ u.role }}
+                  </v-chip>
+                </td>
+                <td>{{ u.assignedWarehouse?.name || 'Ninguna' }}</td>
+                <td>
+                  <v-chip :color="u.enabled ? 'success' : 'error'" size="small" variant="tonal">
+                    {{ u.enabled ? 'Activo' : 'Inactivo' }}
+                  </v-chip>
+                </td>
+                <td>
+                  <v-btn icon="mdi-pencil" variant="text" size="small" color="primary" @click="openEditDialog(u)"></v-btn>
+                  <v-btn 
+                    :icon="u.enabled ? 'mdi-account-off' : 'mdi-account-check'" 
+                    variant="text" 
+                    size="small" 
+                    :color="u.enabled ? 'error' : 'success'" 
+                    @click="toggleActive(u)">
+                  </v-btn>
+                  <v-btn icon="mdi-delete" variant="text" size="small" color="error" @click="openDeleteDialog(u)"></v-btn>
+                </td>
+              </tr>
+            </template>
+            <template #cards>
+              <v-card v-for="u in filteredUsers" :key="u.id" variant="outlined" class="mb-3">
+                <v-card-title>{{ u.nombre }}</v-card-title>
+                <v-card-text>
+                  <div><strong>Email:</strong> {{ u.email }}</div>
+                  <div><strong>Rol:</strong> <v-chip :color="chipColor(u.role)" size="small" variant="tonal">{{ u.role }}</v-chip></div>
+                  <div><strong>Bodega:</strong> {{ u.assignedWarehouse?.name || 'Ninguna' }}</div>
+                  <div><strong>Estado:</strong> <v-chip :color="u.enabled ? 'success' : 'error'" size="small" variant="tonal">{{ u.enabled ? 'Activo' : 'Inactivo' }}</v-chip></div>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn icon="mdi-pencil" variant="text" size="small" color="primary" @click="openEditDialog(u)"></v-btn>
+                  <v-btn :icon="u.enabled ? 'mdi-account-off' : 'mdi-account-check'" variant="text" size="small" :color="u.enabled ? 'error' : 'success'" @click="toggleActive(u)"></v-btn>
+                  <v-btn icon="mdi-delete" variant="text" size="small" color="error" @click="openDeleteDialog(u)"></v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </ResponsiveTable>
         </v-card-text>
       </v-card>
 
@@ -161,13 +208,46 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useUsersStore } from '../../stores/users'
 import { getWarehouses } from '../../api/warehouses'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const store = useUsersStore()
 const warehouses = ref([])
 const loading = ref(false)
+const filterText = ref('')
+const filterRole = ref(null)
+const filterStatus = ref(null)
+
+const statusOptions = [
+  { title: 'Activo', value: 'active' },
+  { title: 'Inactivo', value: 'inactive' },
+]
+
+const filteredUsers = computed(() => {
+  let result = store.users
+
+  if (filterText.value) {
+    const q = filterText.value.toLowerCase()
+    result = result.filter(u =>
+      u.email?.toLowerCase().includes(q) ||
+      u.nombre?.toLowerCase().includes(q)
+    )
+  }
+
+  if (filterRole.value) {
+    result = result.filter(u => u.role === filterRole.value)
+  }
+
+  if (filterStatus.value) {
+    result = result.filter(u =>
+      filterStatus.value === 'active' ? u.enabled : !u.enabled
+    )
+  }
+
+  return result
+})
 const inviting = ref(false)
 const saving = ref(false)
 const editDialog = ref(false)

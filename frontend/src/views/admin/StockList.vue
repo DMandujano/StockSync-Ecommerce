@@ -15,45 +15,89 @@
     <v-card-text>
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
-      <div class="table-container">
-        <v-table class="text-no-wrap" density="comfortable">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Bodega</th>
-              <th>Cantidad</th>
-              <th>Última actualización</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="s in stocks" :key="s.id">
-              <td class="font-weight-medium">{{ s.productName }}</td>
-              <td>{{ s.warehouseName }}</td>
-              <td>
-                <v-chip :color="chipColor(s)" size="small">
-                  {{ s.quantity }}
-                </v-chip>
-              </td>
-              <td>{{ formatDate(s.lastUpdate) }}</td>
-              <td>
-                <v-btn
-                  icon="mdi-delete"
-                  variant="text"
-                  color="error"
-                  size="small"
-                  @click="confirmDelete(s)"
-                />
-              </td>
-            </tr>
-            <tr v-if="!stocks.length && !loading">
-              <td colspan="5" class="text-center text-medium-emphasis py-6">
-                No hay registros de stock
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </div>
+      <v-row dense class="mb-4" align="center">
+        <v-col cols="12" sm="4">
+          <v-text-field
+            v-model="filterProduct"
+            label="Buscar producto"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+            variant="outlined"
+            density="compact"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select
+            v-model="filterWarehouse"
+            :items="warehouses"
+            item-title="name"
+            item-value="id"
+            label="Bodega"
+            clearable
+            variant="outlined"
+            density="compact"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select
+            v-model="filterStockStatus"
+            :items="stockStatusOptions"
+            label="Estado de Stock"
+            clearable
+            variant="outlined"
+            density="compact"
+            hide-details
+          />
+        </v-col>
+      </v-row>
+
+      <ResponsiveTable :loading="loading" :empty="!filteredStocks.length" empty-text="No hay registros de stock" :colspan="5">
+        <template #headers>
+          <tr>
+            <th>Producto</th>
+            <th>Bodega</th>
+            <th>Cantidad</th>
+            <th>Última actualización</th>
+            <th>Acciones</th>
+          </tr>
+        </template>
+        <template #body>
+          <tr v-for="s in filteredStocks" :key="s.id">
+            <td class="font-weight-medium">{{ s.productName }}</td>
+            <td>{{ s.warehouseName }}</td>
+            <td>
+              <v-chip :color="chipColor(s)" size="small">
+                {{ s.quantity }}
+              </v-chip>
+            </td>
+            <td>{{ formatDate(s.lastUpdate) }}</td>
+            <td>
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                color="error"
+                size="small"
+                @click="confirmDelete(s)"
+              />
+            </td>
+          </tr>
+        </template>
+        <template #cards>
+          <v-card v-for="s in filteredStocks" :key="s.id" variant="outlined" class="mb-3">
+            <v-card-title>{{ s.productName }}</v-card-title>
+            <v-card-text>
+              <div><strong>Bodega:</strong> {{ s.warehouseName }}</div>
+              <div><strong>Cantidad:</strong> <v-chip :color="chipColor(s)" size="small">{{ s.quantity }}</v-chip></div>
+              <div><strong>Última actualización:</strong> {{ formatDate(s.lastUpdate) }}</div>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn icon="mdi-delete" variant="text" color="error" size="small" @click="confirmDelete(s)" />
+            </v-card-actions>
+          </v-card>
+        </template>
+      </ResponsiveTable>
     </v-card-text>
 
     <v-dialog v-model="deleteDialog" max-width="400" width="95%">
@@ -123,10 +167,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useStockStore } from '../../stores/stock'
 import { getProducts, getLowStockProducts } from '../../api/products'
 import { getWarehouses } from '../../api/warehouses'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const store = useStockStore()
 const stocks = ref([])
@@ -134,6 +179,39 @@ const products = ref([])
 const warehouses = ref([])
 const loading = ref(false)
 const lowStockProductIds = ref(new Set())
+const filterProduct = ref('')
+const filterWarehouse = ref(null)
+const filterStockStatus = ref(null)
+
+const stockStatusOptions = [
+  { title: 'Crítico (sin stock)', value: 'critical' },
+  { title: 'Bajo', value: 'low' },
+  { title: 'Normal', value: 'normal' },
+]
+
+const filteredStocks = computed(() => {
+  let result = stocks.value
+
+  if (filterProduct.value) {
+    const q = filterProduct.value.toLowerCase()
+    result = result.filter(s => s.productName?.toLowerCase().includes(q))
+  }
+
+  if (filterWarehouse.value) {
+    result = result.filter(s => s.warehouseId === filterWarehouse.value)
+  }
+
+  if (filterStockStatus.value) {
+    result = result.filter(s => {
+      if (filterStockStatus.value === 'critical') return s.quantity === 0
+      if (filterStockStatus.value === 'low') return lowStockProductIds.value.has(s.productId) && s.quantity > 0
+      if (filterStockStatus.value === 'normal') return !lowStockProductIds.value.has(s.productId) && s.quantity > 0
+      return true
+    })
+  }
+
+  return result
+})
 const deleteDialog = ref(false)
 const deleting = ref(false)
 const stockToDelete = ref(null)
@@ -222,39 +300,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
 
-.table-container {
-  overflow-x: auto;
-  width: 100%;
-}
-
-@media (max-width: 960px) {
-
-  .table-container {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  :deep(.v-table) {
-    min-width: 750px;
-  }
-
-}
-
-@media (max-width: 600px) {
-
-  :deep(.v-card-title) {
-    padding: 16px;
-  }
-
-  :deep(.v-card-text) {
-    padding: 12px;
-  }
-
-  :deep(.v-btn) {
-    width: 100%;
-  }
-
-}
-
-</style>

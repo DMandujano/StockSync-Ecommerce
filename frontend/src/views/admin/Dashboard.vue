@@ -31,36 +31,38 @@
           Alertas de Bajo Stock
         </v-card-title>
         <v-card-text>
-          <div class="overflow-x-auto">
-            <v-table density="comfortable" class="text-no-wrap bg-transparent">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Categoría</th>
-                  <th>Stock Mínimo</th>
-                  <th>Stock Actual</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="p in lowStockProducts" :key="p.id">
-                  <td>{{ p.name }}</td>
-                  <td>{{ p.categoryName }}</td>
-                  <td>{{ p.minStockLevel || 5 }}</td>
-                  <td>
-                    <v-chip color="error" size="small" class="font-weight-bold">
-                      {{ p.stock }}
-                    </v-chip>
-                  </td>
-                </tr>
-                <tr v-if="!lowStockProducts.length">
-                  <td colspan="4" class="text-center text-medium">
-                    <v-icon color="success" class="mr-2">mdi-check-circle</v-icon>
-                    No hay productos con stock bajo
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
-          </div>
+          <ResponsiveTable :empty="!lowStockProducts.length" empty-text="No hay productos con stock bajo" :colspan="4">
+            <template #headers>
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Stock Mínimo</th>
+                <th>Stock Actual</th>
+              </tr>
+            </template>
+            <template #body>
+              <tr v-for="p in lowStockProducts" :key="p.id">
+                <td>{{ p.name }}</td>
+                <td>{{ p.categoryName }}</td>
+                <td>{{ p.minStockLevel || 5 }}</td>
+                <td>
+                  <v-chip color="error" size="small" class="font-weight-bold">
+                    {{ p.stock }}
+                  </v-chip>
+                </td>
+              </tr>
+            </template>
+            <template #cards>
+              <v-card v-for="p in lowStockProducts" :key="p.id" variant="outlined" class="mb-3">
+                <v-card-title>{{ p.name }}</v-card-title>
+                <v-card-text>
+                  <div><strong>Categoría:</strong> {{ p.categoryName }}</div>
+                  <div><strong>Stock Mínimo:</strong> {{ p.minStockLevel || 5 }}</div>
+                  <div><strong>Stock Actual:</strong> <v-chip color="error" size="small" class="font-weight-bold">{{ p.stock }}</v-chip></div>
+                </v-card-text>
+              </v-card>
+            </template>
+          </ResponsiveTable>
         </v-card-text>
       </v-card>
     </v-col>
@@ -72,6 +74,7 @@ import { ref, onMounted } from 'vue'
 import { getProducts, getLowStockProducts } from '../../api/products'
 import { getWarehouses } from '../../api/warehouses'
 import { getStocks } from '../../api/stock'
+import ResponsiveTable from '../../components/ResponsiveTable.vue'
 
 const totalProducts = ref(0)
 const totalWarehouses = ref(0)

@@ -32,6 +32,14 @@
               required
             />
 
+            <v-checkbox
+              v-model="rememberMe"
+              label="Recuérdame"
+              color="primary"
+              hide-details
+              class="mt-2"
+            />
+
             <div class="d-flex justify-end mt-2 mb-3">
               <v-btn variant="text" color="primary" to="/forgot-password" size="small">
                 ¿Olvidaste tu contraseña?
@@ -77,6 +85,7 @@ const auth = useAuthStore()
 const form = ref(null) // Referencia para el formulario
 const email = ref('')
 const password = ref('')
+const rememberMe = ref(false)
 const error = ref('')
 const loading = ref(false)
 
@@ -93,7 +102,7 @@ async function handleLogin() {
   loading.value = true
   error.value = ''
   try {
-    const data = await auth.login(email.value, password.value)
+    const data = await auth.login(email.value, password.value, rememberMe.value)
     if (data.forcePasswordChange) {
       router.push('/change-password')
     } else {
